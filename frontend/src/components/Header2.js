@@ -23,12 +23,11 @@ import makeStyles from "@mui/styles/makeStyles";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { logout } from "../actions/auth";
 import { getProfileList } from "../actions/profile";
-import Login from "../components/auth/Login";
-//Auth Links
-import Register from "../components/auth/Register";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 
 const drawerWidth = 372;
 
@@ -164,6 +163,7 @@ const useStyles = makeStyles(() => {
 
 function Header(props) {
   //Filter Logic
+
   const [filterInputState, setFilterInputState] = useState({
     searchInput: "",
     locationInput: "",
@@ -173,11 +173,9 @@ function Header(props) {
   const [individualState, setIndividualState] = useState(false);
   const [companyState, setCompanyState] = useState(false);
 
-  const currentLocation = props.location.pathname;
+  const location = useLocation();
 
-  useEffect(() => {
-    props.getProfileList(filterInputState);
-  }, [filterInputState]);
+  const currentLocation = location.pathname;
 
   const classes = useStyles();
 
@@ -207,7 +205,7 @@ function Header(props) {
     setMobileOpen(!mobileOpen);
   };
 
-  const drawer = (
+  const MDrawer = () => (
     <>
       <IconButton
         color="inherit"
@@ -336,6 +334,10 @@ function Header(props) {
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
+
+  useEffect(() => {
+    props.getProfileList(filterInputState);
+  }, []);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -491,7 +493,7 @@ function Header(props) {
                 width: drawerWidth,
               },
             }}>
-            {drawer}
+            <MDrawer />
           </Drawer>
           <Drawer
             variant="permanent"
@@ -503,7 +505,7 @@ function Header(props) {
               },
             }}
             open>
-            {drawer}
+            <MDrawer />
           </Drawer>
         </Box>
       )}
@@ -549,6 +551,4 @@ const mapStateToProps = (state) => ({
   loading: state.profile.loading,
 });
 
-export default connect(mapStateToProps, { getProfileList, logout })(
-  withRouter(Header)
-);
+export default connect(mapStateToProps, { getProfileList, logout })(Header);

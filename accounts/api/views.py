@@ -1,21 +1,19 @@
-from .serializers import (  UserRegistrationSerializer,
-                            UserLoginSerializer,
-                            ProfileSerializer,
-                            ProfileLinkSerializer,
-                            UserSerializer)
+from accounts.models import Profile
+from django.contrib.auth import get_user_model
+from django.shortcuts import Http404, get_object_or_404
 from rest_framework import generics, permissions, response, status
-from .permissions import IsOwnerOrReadOnly, AnonPermissionOnly
-from django.shortcuts import get_object_or_404, Http404
-
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
-from accounts.models import Profile
-
-from django.contrib.auth import get_user_model
+from .permissions import AnonPermissionOnly, IsOwnerOrReadOnly
+from .serializers import (ProfileLinkSerializer, ProfileSerializer,
+                          UserLoginSerializer, UserRegistrationSerializer,
+                          UserSerializer)
 
 User = get_user_model()
 
-
+class UsersApiView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
 
 class UserAPIView(generics.RetrieveAPIView):
     permission_classes = [

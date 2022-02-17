@@ -92,7 +92,7 @@ export const register = (email, password) => (dispatch) => {
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
-      return res.status;
+      return res.data;
     })
     .catch((err) => {
       const errors = {
@@ -103,6 +103,8 @@ export const register = (email, password) => (dispatch) => {
         type: GET_ERRORS,
         payload: errors,
       });
+
+      return Promise.reject(err);
     });
 };
 

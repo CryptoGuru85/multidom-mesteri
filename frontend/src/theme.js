@@ -28,16 +28,20 @@ const theme = createTheme({
       paper: "#FFFFFF",
     },
   },
-  components: {
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          textTransform: "none !important",
-          letterSpacing: 10,
-        },
-      },
+  typography: {
+    subtitle1: {
+      weight: 600,
     },
   },
 });
-
+theme.props = {
+  MuiButton: {
+    root: {
+      textTransform: "none",
+      disableRipple: true,
+      disableElevation: true,
+      borderRadius: 0,
+    },
+  },
+};
 export default theme;

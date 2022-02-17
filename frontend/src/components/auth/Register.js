@@ -296,6 +296,7 @@ export default connect(mapStateToProps, {login})(withRouter(Login));*/
 
 import CloseIcon from "@mui/icons-material/Close";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { Button, InputLabel } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -303,7 +304,6 @@ import IconButton from "@mui/material/IconButton";
 import Slide from "@mui/material/Slide";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-mui";
 import PropTypes from "prop-types";
@@ -312,114 +312,114 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import * as yup from "yup";
 import { register } from "../../actions/auth";
-const useStyles = makeStyles({
-  registerButton: {
-    width: "140px",
-    height: "42px",
-    background: "#2B2322 0% 0% no-repeat padding-box",
-    boxShadow: "0px 2px 2px #00000029",
-    border: "2px solid #2B2322",
-    borderRadius: "4px",
-    textAlign: "center",
-    font: "normal normal bold 16px/25px Nunito",
-    letterSpacing: "0.32px",
-    color: "#FFFFFF",
-    opacity: 1,
+// const useStyles = makeStyles({
+//   registerButton: {
+//     width: "140px",
+//     height: "42px",
+//     background: "#2B2322 0% 0% no-repeat padding-box",
+//     boxShadow: "0px 2px 2px #00000029",
+//     border: "2px solid #2B2322",
+//     borderRadius: "4px",
+//     textAlign: "center",
+//     font: "normal normal bold 16px/25px Nunito",
+//     letterSpacing: "0.32px",
+//     color: "#FFFFFF",
+//     opacity: 1,
 
-    marginLeft: "12px",
+//     marginLeft: "12px",
 
-    "&:hover": {
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      color: "#2B2322",
-    },
-  },
+//     "&:hover": {
+//       background: "#FFFFFF 0% 0% no-repeat padding-box",
+//       color: "#2B2322",
+//     },
+//   },
 
-  formContainer: {
-    padding: "0px 121px 40px 121px",
-  },
+//   formContainer: {
+//     padding: "0px 121px 40px 121px",
+//   },
 
-  formTitle: {
-    width: "150px",
-    height: "32px",
-    textAlign: "left",
-    font: "normal normal bold 24px/32px Nunito",
-    letterSpacing: "0.48px",
-    color: "#2B2322",
-    opacity: 1,
-    margin: "20px 0px 20px 0px",
-  },
+//   formTitle: {
+//     width: "150px",
+//     height: "32px",
+//     textAlign: "left",
+//     font: "normal normal bold 24px/32px Nunito",
+//     letterSpacing: "0.48px",
+//     color: "#2B2322",
+//     opacity: 1,
+//     margin: "20px 0px 20px 0px",
+//   },
 
-  formIcon: {
-    textAlign: "center",
-  },
+//   formIcon: {
+//     textAlign: "center",
+//   },
 
-  fieldLabel: {
-    textAlign: "left",
-    font: "normal bold 16px/17px Nunito",
-    letterSpacing: "0.32px",
-    color: "#2B2322",
-    opacity: 1,
-  },
+//   fieldLabel: {
+//     textAlign: "left",
+//     font: "normal bold 16px/17px Nunito",
+//     letterSpacing: "0.32px",
+//     color: "#2B2322",
+//     opacity: 1,
+//   },
 
-  textField: {
-    textAlign: "left",
-    font: "medium 16px/22px Nunito",
-    letterSpacing: "0.32px",
-    color: "#2B2322",
-    margin: "20px 0px 20px 0px",
-  },
+//   textField: {
+//     textAlign: "left",
+//     font: "medium 16px/22px Nunito",
+//     letterSpacing: "0.32px",
+//     color: "#2B2322",
+//     margin: "20px 0px 20px 0px",
+//   },
 
-  button: {
-    width: "100%",
-    height: "42px",
-    background: "#2B2322 0% 0% no-repeat padding-box",
-    boxShadow: "0px 2px 2px #00000029",
-    border: "2px solid #2B2322",
-    borderRadius: "4px",
-    textAlign: "center",
-    font: "normal normal bold 16px/25px Nunito",
-    letterSpacing: "0.32px",
-    color: "#FFFFFF",
-    opacity: 1,
+//   button: {
+//     width: "100%",
+//     height: "42px",
+//     background: "#2B2322 0% 0% no-repeat padding-box",
+//     boxShadow: "0px 2px 2px #00000029",
+//     border: "2px solid #2B2322",
+//     borderRadius: "4px",
+//     textAlign: "center",
+//     font: "normal normal bold 16px/25px Nunito",
+//     letterSpacing: "0.32px",
+//     color: "#FFFFFF",
+//     opacity: 1,
 
-    "&:hover": {
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      color: "#2B2322",
-    },
+//     "&:hover": {
+//       background: "#FFFFFF 0% 0% no-repeat padding-box",
+//       color: "#2B2322",
+//     },
 
-    "&:disabled": {
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      color: "#808080",
-      border: "1px solid #808080",
-      "&:hover": {
-        background: "#FFFFFF 0% 0% no-repeat padding-box",
-        color: "#808080",
-        border: "1px solid #808080",
-      },
-    },
+//     "&:disabled": {
+//       background: "#FFFFFF 0% 0% no-repeat padding-box",
+//       color: "#808080",
+//       border: "1px solid #808080",
+//       "&:hover": {
+//         background: "#FFFFFF 0% 0% no-repeat padding-box",
+//         color: "#808080",
+//         border: "1px solid #808080",
+//       },
+//     },
 
-    margin: "20px 0px 20px 0px",
-  },
+//     margin: "20px 0px 20px 0px",
+//   },
 
-  registerText: {
-    textAlign: "center",
-    letterSpacing: "0.3px",
-    color: "#2B2322",
-    opacity: 1,
-    textDecoration: "none",
-  },
+//   registerText: {
+//     textAlign: "center",
+//     letterSpacing: "0.3px",
+//     color: "#2B2322",
+//     opacity: 1,
+//     textDecoration: "none",
+//   },
 
-  progressCircle: {
-    position: "absolute",
-  },
-});
+//   progressCircle: {
+//     position: "absolute",
+//   },
+// });
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Register = (props) => {
-  const classes = useStyles();
+  // const classes = useStyles();
 
   const schema = yup.object().shape({
     email: yup.string().email().required(),
@@ -431,11 +431,16 @@ const Register = (props) => {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    props.register(values.email, values.password);
-
-    setSubmitting(false);
-    values.password = "";
-    values.password2 = "";
+    setSubmitting(true);
+    props
+      .register(values.email, values.password)
+      .then((data) => {
+        values.password = "";
+        values.password2 = "";
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
 
     props.isRegistered && handleClose();
   };
@@ -485,16 +490,16 @@ const Register = (props) => {
 
   return (
     <>
-      <button className={classes.registerButton} onClick={handleOpen}>
+      <Button onClick={handleOpen} variant="contained">
         Register
-      </button>
+      </Button>
 
       <Dialog
         open={openState.open}
         onClose={handleClose}
         fullWidth
         TransitionComponent={Transition}
-        maxWidth="sm">
+        maxWidth="xs">
         <DialogTitle>
           <IconButton
             aria-label="close"
@@ -507,8 +512,8 @@ const Register = (props) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent className={classes.formContainer}>
-          <div className={classes.formIcon}>
+        <DialogContent>
+          <Stack alignItems="center" sx={{ scale: "0.8" }}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="46.985"
@@ -545,9 +550,11 @@ const Register = (props) => {
                 />
               </g>
             </svg>
-          </div>
+          </Stack>
 
-          <Typography className={classes.formTitle}>Inregistrare</Typography>
+          <Typography sx={{ paddingTop: 5 }} variant="subtitle1">
+            Register
+          </Typography>
           <Formik
             initialValues={{
               email: "",
@@ -560,11 +567,8 @@ const Register = (props) => {
             {({ isValid, dirty, isSubmitting }) => {
               return (
                 <Form>
-                  <label className={classes.fieldLabel}>
-                    Introdu adresa de email
-                  </label>
+                  <InputLabel sx={{ paddingTop: 2 }}>Email</InputLabel>
                   <Field
-                    className={classes.textField}
                     variant="outlined"
                     fullWidth
                     name="email"
@@ -572,9 +576,8 @@ const Register = (props) => {
                     type="text"
                   />
 
-                  <label className={classes.fieldLabel}>Parola</label>
+                  <InputLabel sx={{ paddingTop: 2 }}>Password</InputLabel>
                   <Field
-                    className={classes.textField}
                     variant="outlined"
                     fullWidth
                     name="password"
@@ -582,9 +585,10 @@ const Register = (props) => {
                     type="password"
                   />
 
-                  <label className={classes.fieldLabel}>Confirm Password</label>
+                  <InputLabel sx={{ paddingTop: 2 }}>
+                    Confirm Password
+                  </InputLabel>
                   <Field
-                    className={classes.textField}
                     variant="outlined"
                     fullWidth
                     name="password2"
@@ -603,7 +607,11 @@ const Register = (props) => {
                   </Stack>
 
                   {serverMessage ? (
-                    <Typography align="center" color="error" display="block">
+                    <Typography
+                      align="center"
+                      color="error"
+                      display="block"
+                      sx={{ marginTop: 2 }}>
                       {serverMessage && serverMessage.email}
                     </Typography>
                   ) : (
