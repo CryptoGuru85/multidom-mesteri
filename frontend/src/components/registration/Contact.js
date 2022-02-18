@@ -1,4 +1,4 @@
-import { LoadingButton } from "@mui/lab";
+import LoadingButton from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
@@ -49,13 +49,7 @@ const Contact = function () {
   const { getFieldProps, handleSubmit } = formik;
 
   return (
-    <Stack
-      sx={{
-        paddingX: {
-          sm: 1,
-          md: 4,
-        },
-      }}>
+    <Stack>
       <Typography variant="h6">Contact Information</Typography>
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>

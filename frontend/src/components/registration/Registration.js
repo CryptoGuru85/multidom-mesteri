@@ -7,7 +7,8 @@ import Slide from "@mui/material/Slide";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import Contact from "./Contact";
+import Experience from "./Experience";
+// import Contact from "./Contact";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -39,8 +40,16 @@ const Registration = function () {
         </Stack>
 
         <DialogContent>
-          <Stack sx={{ paddingTop: 2 }}>
-            <Contact />
+          <Stack
+            sx={{
+              paddingTop: 2,
+              paddingX: {
+                sm: 1,
+                md: 4,
+              },
+            }}>
+            {/* <Contact /> */}
+            <Experience />
           </Stack>
         </DialogContent>
       </Dialog>
