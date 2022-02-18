@@ -24,7 +24,7 @@ const useStyles = makeStyles({
 
     "& .name": {
       textAlign: "center",
-      font: "normal normal bold 20px/30px Nunito",
+      font: "normal normal bold 20px/30px Lato",
       letterSpacing: "0.4px",
       color: "#2B2322",
       opacity: 1,
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
     },
     "& .role": {
       textAlign: "center",
-      font: "normal normal bold 16px/30px Nunito",
+      font: "normal normal bold 16px/30px Lato",
       letterSpacing: "0.32px",
       color: "#2B2322",
       opacity: 1,
@@ -41,7 +41,7 @@ const useStyles = makeStyles({
     "& .location": {
       display: "flex",
       textAlign: "left",
-      font: "normal normal medium 15px/22px Nunito",
+      font: "normal normal medium 15px/22px Lato",
       letterSpacing: "0.3px",
       color: "#606466",
       opacity: 1,

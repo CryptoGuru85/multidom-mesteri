@@ -1,14 +1,14 @@
-import { ThemeProvider } from "@mui/material/styles";
 import React, { useEffect } from "react";
-import { render } from "react-dom";
+// import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import { loadUser } from "./actions/auth";
 import Header2 from "./components/Header2";
 import ProfileDetails from "./components/profile/ProfileDetails";
+import Registration from "./components/registration/Registration";
 import Home from "./pages/Home";
 import store from "./store";
-import theme from "./theme";
+import ThemeProvider from "./theme";
 
 const App = () => {
   useEffect(() => {
@@ -17,7 +17,7 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider>
         <Router>
           <Header2>
             <Switch>
@@ -25,6 +25,7 @@ const App = () => {
               <Route exact path="/profile/:id" component={ProfileDetails} />
             </Switch>
           </Header2>
+          <Registration />
         </Router>
       </ThemeProvider>
     </Provider>
@@ -33,4 +34,4 @@ const App = () => {
 
 export default App;
 
-render(<App />, document.getElementById("app"));
+// render(<App />, document.getElementById("app"));

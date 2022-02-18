@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
   profileName: {
     textAlign: "left",
-    font: "bold 20px/30px Nunito",
+    font: "bold 20px/30px Lato",
     letterSpacing: "0.4px",
     color: "#2B2322",
     opacity: 1,
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
   profileRole: {
     textAlign: "left",
-    font: "bold 16px/30px Nunito",
+    font: "bold 16px/30px Lato",
     letterSpacing: "0.32px",
     color: "#2B2322",
     opacity: 1,
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 
   profileLocation: {
     textAlign: "left",
-    font: "medium 15px/22px Nunito",
+    font: "medium 15px/22px Lato",
     letterSpacing: " 0.3px",
     color: "#606466",
     opacity: 1,
@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
 
   area: {
     textAlign: "left",
-    font: "bold 18px/22px Nunito",
+    font: "bold 18px/22px Lato",
     letterSpacing: "0.36px",
     color: "#2B2322",
     opacity: 1,
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
 
   bodyHeader: {
     textAlign: "left",
-    font: "bold 18px/22px Nunito",
+    font: "bold 18px/22px Lato",
     letterSpacing: "0.36px",
     color: "#2B2322",
     opacity: 1,
@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme) => ({
     width: "37px",
     height: "22px",
     textAlign: "left",
-    font: "bold 16px/26px Nunito",
+    font: "bold 16px/26px Lato",
     letterSpacing: "0.32px",
     color: "#2B2322",
     opacity: 1,
@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
 
   bodyHeaderLabelSub: {
     textAlign: "left",
-    font: "normal 14px/26px Nunito",
+    font: "normal 14px/26px Lato",
     letterSpacing: "0.28px",
     color: "#2B2322",
     opacity: 1,
@@ -153,7 +153,7 @@ const useStyles = makeStyles((theme) => ({
 
   about: {
     textAlign: "left",
-    font: "normal 16px/26px Nunito",
+    font: "normal 16px/26px Lato",
     letterSpacing: "0.32px",
     color: "#2B2322",
     opacity: 1,
@@ -180,7 +180,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 15,
 
     textAlign: "center",
-    font: "bold 16px/25px Nunito",
+    font: "bold 16px/25px Lato",
     letterSpacing: "0.32px",
     color: "#606466",
     opacity: 1,
@@ -195,7 +195,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "4px",
 
     textAlign: "center",
-    font: "bold 16px/25px Nunito",
+    font: "bold 16px/25px Lato",
     letterSpacing: "0.32px",
     color: "#FFFFFF",
     opacity: 1,

@@ -110,7 +110,7 @@ const useStyles = makeStyles(() => {
         width: "156px",
         height: "22px",
         textAlign: "left",
-        font: "bold 16px/22px Nunito",
+        // font: "bold 16px/22px Nunito",
         letterSpacing: "0.32px",
         color: "#2B2322",
         opacity: 1,
@@ -124,7 +124,7 @@ const useStyles = makeStyles(() => {
         width: "156px",
         height: "22px",
         textAlign: "left",
-        font: "bold 16px/22px Nunito",
+        // font: "bold 16px/22px Nunito",
         letterSpacing: "0.32px",
         color: "#2B2322",
         opacity: 1,
@@ -145,14 +145,14 @@ const useStyles = makeStyles(() => {
       opacity: 1,
       marginTop: 15,
       textAlign: "left",
-      font: "bold 16px/22px Nunito",
+      // font: "bold 16px/22px Nunito",
       letterSpacing: "0.32px",
       color: "#2B2322",
       paddingLeft: 10,
     },
     brand: {
       textAlign: "left",
-      font: "bold 22px/25px Nunito",
+      // font: "bold 22px/25px Nunito",
       letterSpacing: "0.44px",
       color: "#606466",
       opacity: 1,
@@ -319,7 +319,7 @@ function Header(props) {
             border: "2px solid #2B2322",
             borderRadius: "4px",
             textAlign: "center",
-            font: "normal normal bold 16px/25px Nunito",
+            // font: "normal normal bold 16px/25px Nunito",
             letterSpacing: "0.32px",
             color: "#FFFFFF",
             opacity: 1,
@@ -524,9 +524,11 @@ function Header(props) {
           <Button
             sx={{ display: { sm: "none" } }}
             variant="text"
-            style={{
-              font: "normal normal bold 16px/25px Nunito",
-            }}
+            style={
+              {
+                // font: "normal normal bold 16px/25px Nunito",
+              }
+            }
             onClick={handleDrawerToggle}>
             Filtrează
           </Button>
