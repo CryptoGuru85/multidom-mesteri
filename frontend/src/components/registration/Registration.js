@@ -7,7 +7,8 @@ import Slide from "@mui/material/Slide";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-import Experience from "./Experience";
+// import Experience from "./Experience";
+import Personalize from "./Personalize";
 // import Contact from "./Contact";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -49,7 +50,8 @@ const Registration = function () {
               },
             }}>
             {/* <Contact /> */}
-            <Experience />
+            {/* <Experience /> */}
+            <Personalize />
           </Stack>
         </DialogContent>
       </Dialog>
