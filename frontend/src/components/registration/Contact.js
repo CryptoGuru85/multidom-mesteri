@@ -8,41 +8,60 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { updateProfile } from "api/auth";
 import { capitalCase } from "change-case";
 import useFormikValidation from "hooks/useFormikValidation";
 import React, { useState } from "react";
 import * as yup from "yup";
 
-const entities = ["person", "company"];
-
+const entities = ["INDIVIDUAL", "COMPANY"];
+const entityLabels = ["person", "company"];
+const mobileRegExp =
+  /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 const Label = styled(FormLabel)(() => ({
   marginBottom: 1,
 }));
 
-const Contact = function () {
-  const [isLoading, setLoading] = useState();
+const Contact = function (props) {
+  const [isSubmitting, setIsSubmitting] = useState();
+  const profile = props.profile;
+
+  const initialValues = {
+    user_type: profile.user_type,
+    first_name: profile.first_name,
+    last_name: profile.last_name,
+    address: profile.address,
+    city: profile.city,
+    mobile: profile.mobile,
+  };
   const validationSchema = yup.object().shape({
-    entity: yup
+    user_type: yup
       .string()
       .oneOf([...entities, null, ""])
       .required("Entity is required"),
-    fname: yup.string().required("First Name is required"),
-    lname: yup.string().required("Last Name is required"),
+    first_name: yup.string().required("First Name is required"),
+    last_name: yup.string().required("Last Name is required"),
     address: yup.string().required("Address is required"),
     city: yup.string().required("City is required"),
-    mobile: yup.string().required("Mobile is required"),
+    mobile: yup
+      .string()
+      .required("Mobile is required")
+      .max(13, "Invalid mobile")
+      .min(9, "Invalid mobile")
+      .matches(mobileRegExp, "Invalid mobile"),
   });
   const formik = useFormikValidation({
-    initialValues: {
-      entity: entities[0],
-      fname: "",
-      lname: "",
-      address: "",
-      city: "",
-      mobile: "",
-    },
+    initialValues,
     onSubmit(values) {
-      console.log(values);
+      updateProfile(props.userId, values)
+        .then(({ data }) => {
+          props.nextStep();
+          props.setProfile(data);
+        })
+        .catch(({ response }) => {})
+        .finally(() => {
+          setIsSubmitting(false);
+        });
     },
     validationSchema,
   });
@@ -55,13 +74,13 @@ const Contact = function () {
         <Stack spacing={2}>
           <FormControl sx={{ marginTop: 2 }}>
             <Label>Entity</Label>
-            <RadioGroup row {...getFieldProps("entity", true)}>
-              {entities.map((entity) => (
+            <RadioGroup row {...getFieldProps("user_type", true)}>
+              {entities.map((entity, index) => (
                 <FormControlLabel
                   key={entity}
                   value={entity}
                   control={<Radio />}
-                  label={capitalCase(entity)}
+                  label={capitalCase(entityLabels[index])}
                   sx={{ flex: 1 }}
                 />
               ))}
@@ -69,11 +88,11 @@ const Contact = function () {
           </FormControl>
           <FormControl>
             <Label>First Name</Label>
-            <TextField {...getFieldProps("fname")} fullWidth />
+            <TextField {...getFieldProps("first_name")} fullWidth />
           </FormControl>
           <FormControl>
             <Label>Last Name</Label>
-            <TextField {...getFieldProps("lname")} fullWidth />
+            <TextField {...getFieldProps("last_name")} fullWidth />
           </FormControl>
           <FormControl>
             <Label>Address</Label>
@@ -88,11 +107,11 @@ const Contact = function () {
             <TextField
               {...getFieldProps("mobile")}
               fullWidth
-              placeholder="+40750010001"
+              placeholder="40750010001"
             />
           </FormControl>
           <LoadingButton
-            loading={isLoading}
+            loading={isSubmitting}
             variant="contained"
             fullWidth
             size="large"

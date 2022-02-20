@@ -3,8 +3,8 @@ import makeStyles from "@mui/styles/makeStyles";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { getProfileList } from "../actions/profile";
 import Overview from "../components/profile/Overview";
+import { getProfileList } from "../redux/actions/profile";
 
 const useStyles = makeStyles({
   sidebar: {

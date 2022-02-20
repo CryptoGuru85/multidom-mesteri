@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { getProfile } from "../../actions/profile";
+import { getProfile } from "../../redux/actions/profile";
 
 const useStyles = makeStyles((theme) => ({
   profileContainer: {

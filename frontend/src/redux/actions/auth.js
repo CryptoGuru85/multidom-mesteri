@@ -1,4 +1,4 @@
-import api from "../api";
+import api from "../../api";
 import {
   AUTH_ERROR,
   GET_ERRORS,
@@ -10,7 +10,6 @@ import {
 } from "./types";
 
 export const loadUser = () => (dispatch, getState) => {
-  //User Loading
   dispatch({ type: USER_LOADING });
 
   api
@@ -43,18 +42,8 @@ export const tokenConfig = (getState) => {
 };
 
 export const login = (email, password) => (dispatch) => {
-  //Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  //Request Body
-  const body = JSON.stringify({ email, password });
-
   api
-    .post("accounts/login/", body, config)
+    .post("accounts/login/", { email, password })
     .then((res) => {
       dispatch({
         type: LOGIN_SUCCESS,
@@ -62,7 +51,6 @@ export const login = (email, password) => (dispatch) => {
       });
     })
     .catch((err) => {
-      console.log("Errors", err);
       const errors = {
         msg: err.response.data,
         status: err.response.status,
@@ -74,25 +62,14 @@ export const login = (email, password) => (dispatch) => {
     });
 };
 
-export const register = (email, password) => (dispatch) => {
-  //Headers
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  //Request Body
-  const body = JSON.stringify({ email, password });
-
-  return api
-    .post("accounts/register/", body, config)
+export const register = (values) => (dispatch) => {
+  api
+    .post("accounts/register/", values)
     .then((res) => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data,
       });
-      return res.data;
     })
     .catch((err) => {
       const errors = {
@@ -103,12 +80,11 @@ export const register = (email, password) => (dispatch) => {
         type: GET_ERRORS,
         payload: errors,
       });
-
-      return Promise.reject(err);
     });
 };
 
 export const logout = () => (dispatch) => {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
   dispatch({ type: LOGOUT_SUCCESS });
 };

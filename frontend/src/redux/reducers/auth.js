@@ -11,7 +11,7 @@ const initialState = {
   token: localStorage.getItem("token"),
   isAuthenticated: false,
   isLoading: true,
-  user: {},
+  user: JSON.parse(localStorage.getItem("user") || "{}"),
   isRegistered: false,
 };
 
@@ -35,9 +35,11 @@ export default function (state = initialState, action) {
 
     case LOGIN_SUCCESS:
       localStorage.setItem("token", action.payload.tokens.access);
+      localStorage.setItem("user", JSON.stringify(action.payload.user));
+
       return {
         ...state,
-        ...action.payload,
+        user: action.payload.user,
         token: action.payload.tokens.access,
         isAuthenticated: true,
         isLoading: false,

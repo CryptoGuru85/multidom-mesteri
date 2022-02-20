@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { updateProfile } from "api/auth";
 import useFormikValidation from "hooks/useFormikValidation";
 import React, { useState } from "react";
 import * as yup from "yup";
@@ -18,13 +19,13 @@ const Label = styled(FormLabel)(() => ({
 
 const descriptionMaxCount = 250;
 
-const Experience = function () {
+const Experience = function (props) {
   const [isSubmitting, setSubmitting] = useState(false);
   const [services, setServices] = useState([]);
   const [service, setService] = useState("");
   const [serviceError, setServiceError] = useState("");
   const [showAddService, setShowAddService] = useState(false);
-  const [description, setDescription] = useState("");
+  const [about, setDescription] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
   const validationSchema = yup.object().shape({
     role: yup.string().required("Role is required"),
@@ -32,11 +33,11 @@ const Experience = function () {
 
   const formik = useFormikValidation({
     initialValues: {
-      role: "",
+      role: props.profile.role.name || "",
     },
     onSubmit(values) {
       let valid = true;
-      if (description.trim() == "") {
+      if (about.trim() == "") {
         setDescriptionError("Description is required");
         valid = false;
       }
@@ -46,7 +47,15 @@ const Experience = function () {
       }
       if (!valid) return;
       setSubmitting(true);
-      console.log(values);
+      updateProfile(props.userId, { ...values, services, about })
+        .then(({ data }) => {
+          props.setProfile(data);
+          props.nextStep();
+        })
+        .catch(({ response }) => {})
+        .finally(() => {
+          setSubmitting(false);
+        });
     },
     validationSchema,
   });
@@ -79,9 +88,13 @@ const Experience = function () {
   };
 
   const handleDescriptionChange = (event) => {
-    if (description.length == descriptionMaxCount) return;
+    if (about.length == descriptionMaxCount) return;
     setDescription(event.target.value);
     setDescriptionError("");
+  };
+
+  const handleSkip = () => {
+    props.nextStep();
   };
 
   return (
@@ -142,12 +155,12 @@ const Experience = function () {
             <Stack direction="row">
               <Label sx={{ flex: 1 }}>Description</Label>
               <Typography variant="body2">
-                {description.length}/{descriptionMaxCount} characters
+                {about.length}/{descriptionMaxCount} characters
               </Typography>
             </Stack>
             <TextField
-              {...getFieldProps("description")}
-              value={description}
+              {...getFieldProps("about")}
+              value={about}
               onChange={handleDescriptionChange}
               multiline
               rows={6}
@@ -165,7 +178,7 @@ const Experience = function () {
             type="submit">
             Continue
           </LoadingButton>
-          <Button>Skip step</Button>
+          <Button onClick={handleSkip}>Skip step</Button>
         </Stack>
       </form>
     </>

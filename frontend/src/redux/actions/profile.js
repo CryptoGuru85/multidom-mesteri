@@ -1,4 +1,4 @@
-import api from "../api";
+import api from "../../api";
 import { GET_PROFILE, GET_PROFILE_LIST } from "./types";
 
 export const getProfileList = (inputState) => (dispatch, getState) => {

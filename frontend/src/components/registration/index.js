@@ -7,18 +7,32 @@ import Slide from "@mui/material/Slide";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
-// import Experience from "./Experience";
+import Contact from "./Contact";
+import Experience from "./Experience";
 import Personalize from "./Personalize";
-// import Contact from "./Contact";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Registration = function () {
+const Registration = function (props) {
   const [openState, setOpenState] = useState(true);
+  const [currentStep, setCurrentStep] = useState(1);
   const handleClose = () => {
     setOpenState(false);
+  };
+
+  const handlePrevious = () => {
+    if (currentStep == 1) return;
+    setCurrentStep(currentStep - 1);
+  };
+
+  const gotoNextStep = () => {
+    if (currentStep == 3) {
+      handleClose();
+      return;
+    }
+    setCurrentStep(currentStep + 1);
   };
 
   return (
@@ -29,11 +43,11 @@ const Registration = function () {
         fullWidth
         TransitionComponent={Transition}>
         <Stack direction="row" alignItems="center" spacing={1} padding={1}>
-          <IconButton>
+          <IconButton onClick={handlePrevious}>
             <ArrowBackIcon />
           </IconButton>
           <Typography sx={{ flex: 1 }} variant="body2">
-            Step 1 of 3
+            Step {currentStep} of 3
           </Typography>
           <IconButton aria-label="close" onClick={handleClose}>
             <CloseIcon />
@@ -49,9 +63,30 @@ const Registration = function () {
                 md: 4,
               },
             }}>
-            {/* <Contact /> */}
-            {/* <Experience /> */}
-            <Personalize />
+            {currentStep == 1 && (
+              <Contact
+                userId={props.userId}
+                nextStep={gotoNextStep}
+                profile={props.profile}
+                setProfile={props.setProfile}
+              />
+            )}
+            {currentStep == 2 && (
+              <Experience
+                userId={props.userId}
+                nextStep={gotoNextStep}
+                profile={props.profile}
+                setProfile={props.setProfile}
+              />
+            )}
+            {currentStep == 3 && (
+              <Personalize
+                userId={props.userId}
+                nextStep={gotoNextStep}
+                profile={props.profile}
+                setProfile={props.setProfile}
+              />
+            )}
           </Stack>
         </DialogContent>
       </Dialog>

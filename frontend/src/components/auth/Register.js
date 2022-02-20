@@ -11,19 +11,17 @@ import Typography from "@mui/material/Typography";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-mui";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import * as yup from "yup";
-import { register } from "../../actions/auth";
+import { register } from "../../api/auth";
+import Logo from "./../Logo";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Register = (props) => {
-  // const classes = useStyles();
-
   const schema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().min(5).required(),
@@ -34,18 +32,11 @@ const Register = (props) => {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    setSubmitting(true);
-    props
-      .register(values.email, values.password)
-      .then((data) => {
-        values.password = "";
-        values.password2 = "";
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    props.register(values);
 
-    props.isRegistered && handleClose();
+    setSubmitting(false);
+    values.password = "";
+    props.handleDialogStateChange("login");
   };
 
   const [openState, setOpenState] = useState({
@@ -59,7 +50,6 @@ const Register = (props) => {
 
   const handleOpen = () => {
     let oldPath = window.location.href;
-    console.log("The state", oldPath);
     const backTo = oldPath.split(window.location.origin);
 
     const { id, username } = props;
@@ -75,28 +65,33 @@ const Register = (props) => {
     });
 
     window.history.pushState(null, null, newPath);
-
-    setOpenState({
-      open: true,
-    });
+    props.handleDialogStateChange("register");
   };
 
   const handleClose = () => {
     window.history.pushState(null, null, pathState.oldPath);
-
-    setOpenState({
-      open: false,
-    });
+    props.handleDialogStateChange(null);
   };
 
-  let serverMessage = props.error.msg;
+  useEffect(() => {
+    if (props.activeDialog == "register") {
+      !openState.open && setOpenState({ open: true });
+    } else {
+      openState.open && setOpenState({ open: false });
+    }
+  }, [props.activeDialog]);
+
+  const alreadyRegistered = () => {
+    props.handleDialogStateChange("login");
+  };
+
+  const serverMessage = props.error;
 
   return (
     <>
       <Button onClick={handleOpen} variant="contained">
         Register
       </Button>
-
       <Dialog
         open={openState.open}
         onClose={handleClose}
@@ -117,47 +112,13 @@ const Register = (props) => {
         </DialogTitle>
         <DialogContent>
           <Stack alignItems="center" sx={{ scale: "0.8" }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="46.985"
-              height="46.986"
-              viewBox="0 0 46.985 46.986">
-              <g id="logo_multidom" transform="translate(-420.461 -258.523)">
-                <path
-                  id="Path_169"
-                  data-name="Path 169"
-                  d="M467.447,258.523H420.461l23.493,23.493Z"
-                  transform="translate(0 0)"
-                  fill="#bbbcbc"
-                />
-                <path
-                  id="Path_170"
-                  data-name="Path 170"
-                  d="M496.312,258.523l-23.493,23.493,23.493,23.492V258.523"
-                  transform="translate(-28.865)"
-                  fill="#888b8d"
-                />
-                <path
-                  id="Path_171"
-                  data-name="Path 171"
-                  d="M420.463,258.523v46.986l23.492-23.492-23.492-23.493"
-                  transform="translate(-0.001)"
-                  fill="#8c8279"
-                />
-                <path
-                  id="Path_172"
-                  data-name="Path 172"
-                  d="M443.954,310.882h0l-23.492,23.492h46.985l-23.493-23.492"
-                  transform="translate(-0.001 -28.866)"
-                  fill="#2b2322"
-                />
-              </g>
-            </svg>
+            <Logo />
           </Stack>
 
-          <Typography sx={{ paddingTop: 5 }} variant="subtitle1">
+          <Typography sx={{ paddingTop: 5 }} variant="h5">
             Register
           </Typography>
+          {JSON.stringify(props.error)}
           <Formik
             initialValues={{
               email: "",
@@ -205,7 +166,7 @@ const Register = (props) => {
                       loading={isSubmitting}
                       sx={{ flex: 1, paddingY: 1.5 }}
                       variant="contained">
-                      Register
+                      Continue
                     </LoadingButton>
                   </Stack>
 
@@ -220,6 +181,19 @@ const Register = (props) => {
                   ) : (
                     ""
                   )}
+
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="center"
+                    sx={{ marginTop: 3 }}>
+                    <Typography>Already registered? </Typography>
+                    <Typography
+                      sx={{ textDecoration: "underline", fontWeight: 600 }}
+                      onClick={alreadyRegistered}>
+                      Login
+                    </Typography>
+                  </Stack>
                 </Form>
               );
             }}
@@ -241,4 +215,4 @@ const mapStateToProps = (state) => ({
   error: state.errors,
 });
 
-export default connect(mapStateToProps, { register })(withRouter(Register));
+export default connect(mapStateToProps, { register })(Register);

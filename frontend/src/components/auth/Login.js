@@ -10,11 +10,10 @@ import Typography from "@mui/material/Typography";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-mui";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import * as yup from "yup";
-import { login } from "../../actions/auth";
+import { login } from "../../redux/actions/auth";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -60,21 +59,34 @@ const Login = (props) => {
     });
 
     window.history.pushState(null, null, newPath);
-
-    setOpenState({
-      open: true,
-    });
+    props.handleDialogStateChange("login");
   };
 
   const handleClose = () => {
     window.history.pushState(null, null, pathState.oldPath);
-
-    setOpenState({
-      open: false,
-    });
+    props.handleDialogStateChange(null);
   };
 
   let serverMessage = props.error.msg.non_field_errors;
+
+  useEffect(() => {
+    if (props.activeDialog == "login") {
+      !openState.open && setOpenState({ open: true });
+    } else {
+      if (openState.open)
+        setOpenState({
+          open: false,
+        });
+    }
+  }, [props.activeDialog]);
+
+  const notRegistered = () => {
+    props.handleDialogStateChange("register");
+  };
+
+  // const store = useStore();
+  // const state = store.getState();
+  // const user = state.auth.user;
 
   return (
     <>
@@ -140,7 +152,7 @@ const Login = (props) => {
             </svg>
           </Stack>
 
-          <Typography variant="subtitle1" sx={{ marginTop: 5 }}>
+          <Typography variant="h5" sx={{ marginTop: 5 }}>
             Login
           </Typography>
           <Formik
@@ -172,16 +184,18 @@ const Login = (props) => {
                     type="password"
                   />
 
-                  <Stack>
-                    <LoadingButton
-                      type="submit"
-                      disabled={!isValid || !dirty || isSubmitting}
-                      loading={isSubmitting}
-                      variant="contained"
-                      sx={{ marginTop: 3, flex: 1, paddingY: 1.5 }}>
-                      Login
-                    </LoadingButton>
-                  </Stack>
+                  <LoadingButton
+                    type="submit"
+                    disabled={!isValid || !dirty || isSubmitting}
+                    loading={isSubmitting}
+                    variant="contained"
+                    sx={{ marginTop: 3, flex: 1, paddingY: 1.5 }}
+                    fullWidth>
+                    Login
+                  </LoadingButton>
+                  <Button variant="outlined" fullWidth sx={{ marginTop: 2 }}>
+                    Recover Password
+                  </Button>
 
                   {serverMessage ? (
                     <Typography
@@ -194,6 +208,19 @@ const Login = (props) => {
                   ) : (
                     ""
                   )}
+
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="center"
+                    sx={{ marginTop: 3 }}>
+                    <Typography>Not registered? </Typography>
+                    <Typography
+                      sx={{ textDecoration: "underline", fontWeight: 600 }}
+                      onClick={notRegistered}>
+                      Register
+                    </Typography>
+                  </Stack>
                 </Form>
               );
             }}
@@ -212,6 +239,7 @@ Login.propTypes = {
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.errors,
+  user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { login })(withRouter(Login));
+export default connect(mapStateToProps, { login })(Login);
