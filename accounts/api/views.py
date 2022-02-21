@@ -1,19 +1,31 @@
-from accounts.models import Profile
+import json
+
+from accounts.models import City, Profile, Role, Service
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.shortcuts import Http404, get_object_or_404
 from rest_framework import generics, permissions, response, status
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from .permissions import AnonPermissionOnly, IsOwnerOrReadOnly
-from .serializers import (ProfileLinkSerializer, ProfileSerializer,
-                          UserLoginSerializer, UserRegistrationSerializer,
-                          UserSerializer)
+from .serializers import (
+    CitySerializer,
+    ProfileLinkSerializer,
+    ProfileSerializer,
+    RoleSerializer,
+    ServiceSerializer,
+    UserLoginSerializer,
+    UserRegistrationSerializer,
+    UserSerializer,
+)
 
 User = get_user_model()
+
 
 class UsersApiView(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+
 
 class UserAPIView(generics.RetrieveAPIView):
     permission_classes = [
@@ -31,7 +43,6 @@ class UserRegistrationAPIView(generics.CreateAPIView):
     queryset = User.objects.all()
 
 
-
 class UserLoginAPIView(generics.GenericAPIView):
 
     permission_classes = [AnonPermissionOnly]
@@ -44,27 +55,28 @@ class UserLoginAPIView(generics.GenericAPIView):
         access_token = RefreshToken.for_user(user).access_token
         refresh_token = RefreshToken.for_user(user)
 
-        
-        return response.Response({
-            "user": UserSerializer(user, context=self.get_serializer_context()).data,
-            "tokens":{"access": str(access_token),
-                    "refresh": str(refresh_token)}
-        })
+        return response.Response(
+            {
+                "user": UserSerializer(
+                    user, context=self.get_serializer_context()
+                ).data,
+                "tokens": {"access": str(access_token), "refresh": str(refresh_token)},
+            }
+        )
+
 
 class ProfileListAPIView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = ProfileLinkSerializer
-    search_fields = ['user_type', 'role__name', 'services__name', 'city']
+    search_fields = ["user_type", "role__name", "services__name", "city"]
 
     def get_queryset(self):
         qs = Profile.objects.filter(user__is_admin=False)
         return qs
 
-    
+
 class ProfileAPIView(generics.RetrieveUpdateAPIView):
-    permission_classes = [
-        IsOwnerOrReadOnly
-    ]
+    permission_classes = [IsOwnerOrReadOnly]
     serializer_class = ProfileSerializer
 
     def get_object(self, *args, **kwargs):
@@ -86,4 +98,60 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         if profile.owner == user:
             is_owner = True
 
-        return {'is_owner': is_owner}
+        return {"is_owner": is_owner}
+
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs, status=404)
+
+
+class RoleListApiView(generics.ListCreateAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = RoleSerializer
+    queryset = Role.objects.all()
+
+
+class RoleApiView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = RoleSerializer
+    queryset = Role.objects.all()
+
+
+class ServiceListApiView(generics.ListCreateAPIView):
+
+    serializer_class = ServiceSerializer
+    queryset = Service.objects.all()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        role = self.request.query_params.get("role")
+        if role is None:
+            return queryset
+        return queryset.filter(role=role)
+
+
+class ServiceApiView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = ServiceSerializer
+    queryset = Service.objects.all()
+
+
+class CityListApiView(generics.ListAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = CitySerializer
+    queryset = City.objects.all()
+
+
+class CityApiView(generics.RetrieveAPIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = CitySerializer
+    queryset = City.objects.all()

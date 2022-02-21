@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as yup from "yup";
-import { register } from "../../api/auth";
+import { register } from "../../redux/actions/auth";
 import Logo from "./../Logo";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -118,7 +118,6 @@ const Register = (props) => {
           <Typography sx={{ paddingTop: 5 }} variant="h5">
             Register
           </Typography>
-          {JSON.stringify(props.error)}
           <Formik
             initialValues={{
               email: "",

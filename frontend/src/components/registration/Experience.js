@@ -1,4 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
+import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
@@ -7,9 +8,9 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { updateProfile } from "api/auth";
+import { getRoles, getServices, updateProfile } from "api/auth";
 import useFormikValidation from "hooks/useFormikValidation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 import ChipGroup from "../ChipGroup";
 
@@ -22,21 +23,28 @@ const descriptionMaxCount = 250;
 const Experience = function (props) {
   const [isSubmitting, setSubmitting] = useState(false);
   const [services, setServices] = useState([]);
-  const [service, setService] = useState("");
-  const [serviceError, setServiceError] = useState("");
+  const [suggestionServices, setSuggestionServices] = useState([]);
+  const [service, setService] = useState(null);
   const [showAddService, setShowAddService] = useState(false);
   const [about, setDescription] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [role, setRole] = useState(null);
+  const [serviceError, setServiceError] = useState("");
+  const [roleError, setRoleError] = useState("");
   const [descriptionError, setDescriptionError] = useState("");
-  const validationSchema = yup.object().shape({
-    role: yup.string().required("Role is required"),
-  });
+
+  const validationSchema = yup.object().shape({});
 
   const formik = useFormikValidation({
     initialValues: {
-      role: props.profile.role.name || "",
+      role: props.profile.role,
     },
     onSubmit(values) {
       let valid = true;
+      if (!role) {
+        setRoleError("Role is required");
+        valid = false;
+      }
       if (about.trim() == "") {
         setDescriptionError("Description is required");
         valid = false;
@@ -47,7 +55,11 @@ const Experience = function (props) {
       }
       if (!valid) return;
       setSubmitting(true);
-      updateProfile(props.userId, { ...values, services, about })
+      updateProfile(props.userId, {
+        role: role.id,
+        services: services.map((it) => it.id),
+        about,
+      })
         .then(({ data }) => {
           props.setProfile(data);
           props.nextStep();
@@ -63,24 +75,24 @@ const Experience = function (props) {
   const { getFieldProps, handleSubmit } = formik;
 
   const handleServiceRemove = (index) => {
+    let service = services[index];
     let newServices = [...services];
     setServices(newServices.filter((_, i) => index != i));
   };
 
-  const handleAddService = () => {
-    if (service.trim() == "") {
-      setServiceError("Service can't be empty");
+  const handleServiceChange = (event, newService) => {
+    setService(null);
+    setServiceError("");
+    if (
+      newService == null ||
+      newService == undefined ||
+      services.includes(newService)
+    ) {
       return;
     }
     let newServices = [...services];
-    newServices.push(service);
+    newServices.push(newService);
     setServices(newServices);
-    setService("");
-  };
-
-  const handleServiceChange = (event) => {
-    setService(event.target.value);
-    setServiceError("");
   };
 
   const toggleShowAddService = () => {
@@ -93,9 +105,32 @@ const Experience = function (props) {
     setDescriptionError("");
   };
 
+  const handleRoleChange = (event, newRole) => {
+    setServices([]);
+    setSuggestionServices([]);
+    setRole(newRole);
+    setRoleError("");
+    console.log(newRole);
+    newRole &&
+      getServices({ role: newRole.id })
+        .then(({ data }) => {
+          setSuggestionServices(data);
+          setServices(data.filter((it) => it.is_suggested));
+        })
+        .catch((err) => {});
+  };
+
   const handleSkip = () => {
     props.nextStep();
   };
+
+  useEffect(() => {
+    getRoles()
+      .then(({ data }) => {
+        setRoles(data);
+      })
+      .catch((err) => {});
+  }, []);
 
   return (
     <>
@@ -104,7 +139,21 @@ const Experience = function (props) {
         <Stack spacing={2}>
           <FormControl sx={{ marginTop: 2 }}>
             <Label>Role</Label>
-            <TextField {...getFieldProps("role")} />
+            <Autocomplete
+              renderInput={(params) => <TextField {...params} />}
+              options={roles}
+              getOptionLabel={(role) => role.name}
+              value={role}
+              onChange={handleRoleChange}
+              isOptionEqualToValue={(option, { value }) =>
+                option.value == value
+              }
+            />
+            <Box>
+              <Typography variant="caption" color="error">
+                {roleError}
+              </Typography>
+            </Box>
           </FormControl>
           <div>
             <Stack>
@@ -112,7 +161,7 @@ const Experience = function (props) {
               <Box>
                 <ChipGroup
                   items={services.map((serv) => ({
-                    title: serv,
+                    title: serv.name,
                   }))}
                   editable={true}
                   onRemove={handleServiceRemove}>
@@ -121,19 +170,17 @@ const Experience = function (props) {
               </Box>
               {showAddService && (
                 <Stack direction="row" spacing={1} alignItems="baseline">
-                  <TextField
+                  <Autocomplete
+                    renderInput={(params) => <TextField {...params} />}
+                    options={suggestionServices}
+                    getOptionLabel={(service) => service.name}
                     value={service}
                     onChange={handleServiceChange}
-                    sx={{ marginTop: 2, flex: 1 }}
-                    placeholder="Add service"
+                    isOptionEqualToValue={(option, { value }) =>
+                      option.value == value
+                    }
+                    fullWidth
                   />
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    size="small"
-                    onClick={handleAddService}>
-                    Add
-                  </Button>
                 </Stack>
               )}
             </Stack>
@@ -142,14 +189,12 @@ const Experience = function (props) {
                 {serviceError}
               </Typography>
             </Box>
-            {!showAddService && (
-              <Button
-                variant="outlined"
-                onClick={toggleShowAddService}
-                sx={{ marginTop: 1 }}>
-                Add service
-              </Button>
-            )}
+            <Button
+              variant="outlined"
+              onClick={toggleShowAddService}
+              sx={{ marginTop: 1 }}>
+              Add service
+            </Button>
           </div>
           <FormControl>
             <Stack direction="row">

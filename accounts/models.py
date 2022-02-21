@@ -1,8 +1,6 @@
-from statistics import mode
-
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.db.models.deletion import DO_NOTHING, SET_NULL
+from django.db.models.deletion import SET_NULL
 
 
 def upload_profile_picture(instance, filename):
@@ -98,12 +96,13 @@ class Role(models.Model):
 
 
 class Service(models.Model):
-    role = models.ForeignKey(Role, on_delete=models.CASCADE)
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=255, null=False, blank=False)
     is_suggested = models.BooleanField(default=False)
+    role = models.OneToOneField(Role, models.CASCADE, blank=False, null=False)
 
-    def __str__(self):
-        return self.name
+
+class City(models.Model):
+    name = models.CharField(max_length=255, null=False, blank=False)
 
 
 class Profile(models.Model):
@@ -117,7 +116,7 @@ class Profile(models.Model):
     company_name = models.CharField(max_length=64, blank=True, null=False)
     about = models.TextField(max_length=265, blank=True, null=False)
     address = models.TextField(max_length=265, blank=True, null=False)
-    city = models.CharField(max_length=64, blank=True, null=False)
+    city = models.OneToOneField(City, models.CASCADE, blank=True, null=True)
     mobile = models.CharField(max_length=64, blank=True, null=False)
     profile_picture = models.ImageField(
         upload_to=upload_profile_picture, blank=True, null=False

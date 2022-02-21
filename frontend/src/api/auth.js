@@ -1,13 +1,11 @@
 import api from "api";
 
-export const register = (values) => {
-  return api.post("accounts/register/", values);
-};
+export const updateProfile = (id, values) =>
+  api.patch(`accounts/profile/${id}/`, values);
 
-export const updateProfile = (id, values) => {
-  return api.patch(`accounts/profile/${id}/`, values);
-};
+export const getCities = () => api.get("accounts/cities/");
 
-export const login = (values) => {
-  return api.post("accounts/login/", values);
-};
+export const getRoles = () => api.get("accounts/roles/");
+
+export const getServices = (params) =>
+  api.get("accounts/services/", { params });

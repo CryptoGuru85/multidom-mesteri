@@ -2,16 +2,18 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
+import MenuItem from "@mui/material/MenuItem";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import Select from "@mui/material/Select";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { updateProfile } from "api/auth";
+import { getCities, updateProfile } from "api/auth";
 import { capitalCase } from "change-case";
 import useFormikValidation from "hooks/useFormikValidation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
 
 const entities = ["INDIVIDUAL", "COMPANY"];
@@ -24,6 +26,7 @@ const Label = styled(FormLabel)(() => ({
 
 const Contact = function (props) {
   const [isSubmitting, setIsSubmitting] = useState();
+  const [cities, setCities] = useState([]);
   const profile = props.profile;
 
   const initialValues = {
@@ -66,6 +69,15 @@ const Contact = function (props) {
     validationSchema,
   });
   const { getFieldProps, handleSubmit } = formik;
+  useEffect(() => {
+    getCities()
+      .then(({ data }) => {
+        setCities(data);
+      })
+      .catch(({ response }) => {
+        console.log(response);
+      });
+  }, []);
 
   return (
     <Stack>
@@ -100,7 +112,11 @@ const Contact = function (props) {
           </FormControl>
           <FormControl>
             <Label>City</Label>
-            <TextField {...getFieldProps("city")} fullWidth />
+            <Select {...getFieldProps("city")} fullWidth>
+              {cities.map((city) => (
+                <MenuItem value={city.id}>{city.name}</MenuItem>
+              ))}
+            </Select>
           </FormControl>
           <FormControl>
             <Label>Mobile</Label>
@@ -110,15 +126,16 @@ const Contact = function (props) {
               placeholder="40750010001"
             />
           </FormControl>
-          <LoadingButton
-            loading={isSubmitting}
-            variant="contained"
-            fullWidth
-            size="large"
-            type="submit">
-            Continue
-          </LoadingButton>
         </Stack>
+        <LoadingButton
+          loading={isSubmitting}
+          variant="contained"
+          fullWidth
+          size="large"
+          sx={{ marginTop: 5 }}
+          type="submit">
+          Continue
+        </LoadingButton>
       </form>
     </Stack>
   );
