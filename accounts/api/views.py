@@ -71,7 +71,9 @@ class ProfileListAPIView(generics.ListAPIView):
     search_fields = ["user_type", "role__name", "services__name", "city"]
 
     def get_queryset(self):
-        qs = Profile.objects.filter(user__is_admin=False)
+        qs = Profile.objects.filter(
+            user__is_admin=False, first_name__isnull=False
+        ).exclude(first_name="", last_name="")
         return qs
 
 
@@ -98,7 +100,7 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         if profile.owner == user:
             is_owner = True
 
-        return {"is_owner": is_owner}
+        return {"is_owner": is_owner, **super().get_serializer_context(*args, **kwargs)}
 
 
 class RoleListApiView(generics.ListCreateAPIView):

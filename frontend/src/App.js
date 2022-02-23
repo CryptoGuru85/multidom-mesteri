@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-// import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { HashRouter as Router, Route, Switch } from "react-router-dom";
-import Header2 from "./components/Header2";
+import Header from "./components/Header";
 import ProfileDetails from "./components/profile/ProfileDetails";
 import Home from "./pages/Home";
 import { loadUser } from "./redux/actions/auth";
@@ -18,12 +17,12 @@ const App = () => {
     <Provider store={store}>
       <ThemeProvider>
         <Router>
-          <Header2>
+          <Header>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/profile/:id" component={ProfileDetails} />
             </Switch>
-          </Header2>
+          </Header>
         </Router>
       </ThemeProvider>
     </Provider>
@@ -31,5 +30,3 @@ const App = () => {
 };
 
 export default App;
-
-// render(<App />, document.getElementById("app"));

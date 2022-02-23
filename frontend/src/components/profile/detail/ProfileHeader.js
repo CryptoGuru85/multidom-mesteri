@@ -23,7 +23,10 @@ const ProfileHeader = (props) => {
         <CardContent>
           <Stack spacing={3} direction={{ md: "row", xs: "column" }}>
             <Box sx={{ justifyContent: "center", display: "flex" }}>
-              <Avatar sx={{ width: 100, height: 100 }} />
+              <Avatar
+                sx={{ width: 100, height: 100 }}
+                src={profile.profile_picture}
+              />
             </Box>
             <Stack spacing={1} sx={{ flex: 1 }}>
               <Typography variant="h6" textAlign={{ xs: "center", md: "left" }}>

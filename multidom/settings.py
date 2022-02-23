@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     #
     "accounts.apps.AccountsConfig",
     "frontend.apps.FrontendConfig",
+    # should be placed last
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
