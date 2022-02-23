@@ -6,10 +6,10 @@ export const getProfileList = (inputState) => (dispatch, getState) => {
     .get(
       `accounts/profiles/?search=${inputState.searchInput}+${inputState.locationInput}+${inputState.entityInput}`
     )
-    .then((res) => {
+    .then(({ data }) => {
       dispatch({
         type: GET_PROFILE_LIST,
-        payload: res.data,
+        payload: data,
       });
     })
     .catch((err) => {

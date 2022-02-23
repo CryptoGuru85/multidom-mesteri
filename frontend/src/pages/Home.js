@@ -1,30 +1,11 @@
 import Grid from "@mui/material/Grid";
-import makeStyles from "@mui/styles/makeStyles";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import Overview from "../components/profile/Overview";
 import { getProfileList } from "../redux/actions/profile";
 
-const useStyles = makeStyles({
-  sidebar: {
-    width: "372px",
-    height: "100%",
-    top: 0,
-    left: 0,
-    background: "#ffffff00",
-    border: "1px solid #DADCE0",
-  },
-
-  content: {
-    display: "flex",
-    textAlign: "center",
-  },
-});
-
 const Home = (props) => {
-  const classes = useStyles();
-
   const [profileListState, setProfileListState] = useState([]);
 
   const [filterInputState, setFilterInputState] = useState({
@@ -46,10 +27,10 @@ const Home = (props) => {
   }, [props.profile_list]);
 
   return (
-    <Grid className={classes.content} justifyContent="center" container>
+    <Grid container rowSpacing={3} columnSpacing={3}>
       {profileListState.length > 0 &&
         profileListState.map((data, index) => (
-          <Grid item key={index}>
+          <Grid item key={index} xs={6} md={4} lg={3}>
             <Overview data={data} />
           </Grid>
         ))}

@@ -1,28 +1,5 @@
 import { Theme, ThemeOptions } from "@mui/material/styles";
 
-// const CardOverride: ThemeOptions["components"] = {
-//   MuiCardHeader: {
-//     styleOverrides: {
-//       title: ({ theme }) => ({
-//         fontFamily: "Lato, sans-serif",
-//         padding: 0,
-//         margin: 0,
-//         "& h4": {
-//           fontSize: 32,
-//           marginBottom: 12,
-//           lineHeight: "25px",
-//           color: theme.palette.text.primary,
-//         },
-//       }),
-//       subheader: ({ theme }) => ({
-//         fontSize: 12,
-//         fontFamily: "Lato, sans-serif",
-//         color: theme.palette.grey.A700,
-//       }),
-//     },
-//   },
-// };
-
 const CardOverride = (theme: Theme): ThemeOptions["components"] => ({
   MuiCard: {
     styleOverrides: {

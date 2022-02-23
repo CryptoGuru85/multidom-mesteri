@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
@@ -14,19 +13,19 @@ const ProfileDetail = (props) => {
   return (
     <>
       <Container>
-        <Stack spacing={3}>
-          <ProfileHeader profile={props.profile} />
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={8}>
-              <ProfileInformation profile={props.profile} />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Box>
-                <WorkArea profile={props.profile} />
-              </Box>
-            </Grid>
+        <ProfileHeader profile={props.profile} />
+      </Container>
+      <Container sx={{ marginTop: 3 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={8}>
+            <ProfileInformation profile={props.profile} />
           </Grid>
-        </Stack>
+          <Grid item xs={12} md={4}>
+            <Box>
+              <WorkArea profile={props.profile} />
+            </Box>
+          </Grid>
+        </Grid>
       </Container>
     </>
   );

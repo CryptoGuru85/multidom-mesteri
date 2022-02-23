@@ -88,7 +88,7 @@ const createCustomShadow = (color: string) => {
     warning: `0 8px 16px 0 ${alpha(palette.light.warning.main, 0.24)}`,
     error: `0 8px 16px 0 ${alpha(palette.light.error.main, 0.24)}`,
     //
-    card: `0 0 2px 0 ${alpha(color, 0.2)}, 0 12px 24px -4px ${alpha(
+    card: `0 0 1px 0 ${alpha(color, 0.1)}, 0 4px 8px -2px ${alpha(
       color,
       0.12
     )}`,

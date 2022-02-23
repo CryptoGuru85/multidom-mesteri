@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from .permissions import AnonPermissionOnly, IsOwnerOrReadOnly
 from .serializers import (
     CitySerializer,
-    ProfileLinkSerializer,
+    ProfileListSerializer,
     ProfileSerializer,
     RoleSerializer,
     ServiceSerializer,
@@ -67,7 +67,7 @@ class UserLoginAPIView(generics.GenericAPIView):
 
 class ProfileListAPIView(generics.ListAPIView):
     permission_classes = [permissions.AllowAny]
-    serializer_class = ProfileLinkSerializer
+    serializer_class = ProfileListSerializer
     search_fields = ["user_type", "role__name", "services__name", "city"]
 
     def get_queryset(self):
@@ -99,9 +99,6 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
             is_owner = True
 
         return {"is_owner": is_owner}
-
-    def patch(self, request, *args, **kwargs):
-        return super().patch(request, *args, **kwargs, status=404)
 
 
 class RoleListApiView(generics.ListCreateAPIView):

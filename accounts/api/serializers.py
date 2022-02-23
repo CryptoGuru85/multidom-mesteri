@@ -45,6 +45,17 @@ class UserLoginSerializer(serializers.Serializer):
         raise serializers.ValidationError("Incorrect Credentials")
 
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = "__all__"
+
+    def to_internal_value(self, data):
+        if str(data).isdigit():
+            return Role.objects.get(id=data)
+        return super().to_internal_value(data)
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
@@ -56,38 +67,43 @@ class ServiceSerializer(serializers.ModelSerializer):
         return super().to_internal_value(data)
 
 
+class CitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = City
+        fields = "__all__"
+
+    def to_internal_value(self, data):
+        if str(data).isdigit():
+            return City.objects.get(id=data)
+        return super().to_internal_value(data)
+
+
 class ProfileSerializer(serializers.ModelSerializer):
     is_owner = serializers.SerializerMethodField(read_only=True)
     services = ServiceSerializer(many=True)
-    role = serializers.SerializerMethodField(read_only=True)
+    role = RoleSerializer()
+    city = CitySerializer()
     projects = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Profile
         fields = "__all__"
-        read_only_fields = ["is_owner", "services", "role", "projects"]
+        read_only_fields = ["is_owner", "projects"]
 
     def get_is_owner(self, _):
         owner = self.context["is_owner"]
         return owner
-
-    # def get_services(self, obj):
-    #     return ServiceSerializer(obj.services, many=True).data
-
-    def get_role(self, obj):
-        return RoleSerializer(obj.role).data
 
     def get_projects(self, obj):
         qs = Project.objects.filter(profile=obj)
         return ProjectSerializer(qs, many=True).data
 
     def update(self, instance, validated_data):
+        role = validated_data.get("role")
         services = validated_data.pop("services", [])
-
         instance = super().update(instance, validated_data)
-
-        instance.services.set(services, clear=True)
-
+        if role != None:
+            instance.services.set(services, clear=True)
         print(instance.services)
 
         return instance
@@ -99,17 +115,12 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class RoleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Role
-        fields = "__all__"
-
-
-class ProfileLinkSerializer(serializers.ModelSerializer):
+class ProfileListSerializer(serializers.ModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
     user_id = serializers.SerializerMethodField(read_only=True)
-    services = serializers.SerializerMethodField(read_only=True)
-    role = serializers.SerializerMethodField(read_only=True)
+    services = ServiceSerializer(many=True)
+    role = RoleSerializer()
+    city = CitySerializer()
 
     class Meta:
         model = Profile
@@ -119,17 +130,5 @@ class ProfileLinkSerializer(serializers.ModelSerializer):
     def get_url(self, obj):
         return "/account/profile/{id}/".format(id=obj.user.id)
 
-    def get_services(self, obj):
-        return ServiceSerializer(obj.services, many=True).data
-
-    def get_role(self, obj):
-        return RoleSerializer(obj.role).data
-
     def get_user_id(self, obj):
         return obj.user.id
-
-
-class CitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = City
-        fields = "__all__"

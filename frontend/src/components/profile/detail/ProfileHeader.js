@@ -32,14 +32,16 @@ const ProfileHeader = (props) => {
               <Typography
                 sx={{ fontWeight: 500, marginLeft: 100 }}
                 textAlign={{ xs: "center", md: "left" }}>
-                {profile.role.name ? profile.role.name : "--"}
+                {profile.role ? profile.role.name : "--"}
               </Typography>
               <Stack
                 spacing={0.2}
                 direction="row"
                 justifyContent={{ xs: "center", md: "flex-start" }}>
                 <LocationOnIcon />
-                <Typography>{profile.city}</Typography>
+                <Typography>
+                  {profile.city ? profile.city.name : "--"}
+                </Typography>
               </Stack>
             </Stack>
             <Stack>

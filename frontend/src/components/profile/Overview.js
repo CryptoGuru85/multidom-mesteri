@@ -1,103 +1,52 @@
-//Style
-//Icons
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import Chip from "@mui/material/Chip";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
+import ChipGroup from "components/ChipGroup";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-//Local imports
-
-const useStyles = makeStyles({
-  container: {
-    width: "400px",
-    height: "334px",
-    margin: 15,
-
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-
-    "& .name": {
-      textAlign: "center",
-      font: "normal normal bold 20px/30px Lato",
-      letterSpacing: "0.4px",
-      color: "#2B2322",
-      opacity: 1,
-      marginBottom: 5,
-    },
-    "& .role": {
-      textAlign: "center",
-      font: "normal normal bold 16px/30px Lato",
-      letterSpacing: "0.32px",
-      color: "#2B2322",
-      opacity: 1,
-      marginBottom: 5,
-    },
-    "& .location": {
-      display: "flex",
-      textAlign: "left",
-      font: "normal normal medium 15px/22px Lato",
-      letterSpacing: "0.3px",
-      color: "#606466",
-      opacity: 1,
-    },
-    "& .service-container": {
-      margin: 8,
-      textAlign: "center",
-      "& .service": {
-        margin: 5,
-      },
-    },
-  },
-  avatar: {
-    width: "64px",
-    height: "64px",
-    marginBottom: 5,
-  },
-});
-
 const Overview = (props) => {
-  const classes = useStyles();
-
-  const [profileState, setProfileState] = useState({});
+  const [profile, setProfile] = useState({});
 
   useEffect(() => {
-    setProfileState(props.data);
+    setProfile(props.data);
   }, [props.data]);
 
   return (
-    <Card
-      className={classes.container}
-      component={Link}
-      to={`/profile/${profileState.id}`}>
-      <Avatar
-        className={classes.avatar}
-        src={profileState.profile_picture && profileState.profile_picture}
-      />
-      <Typography className="name">
-        {profileState.first_name && profileState.first_name}{" "}
-        {profileState.last_name && profileState.last_name}
-      </Typography>
-      {profileState.role && (
-        <Typography className="role">{profileState.role.name}</Typography>
-      )}
-      {profileState.city && (
-        <div className="location">
-          <LocationOnIcon /> <Typography>{profileState.city}</Typography>
-        </div>
-      )}
-      {profileState.services && profileState.services.length > 0 && (
-        <div className="service-container">
-          {profileState.services.map((data, index) => (
-            <Chip key={index} className="service" label={data.name} />
-          ))}
-        </div>
-      )}
+    <Card component={Link} to={`/profile/${profile.user}`}>
+      <CardContent>
+        <Stack spacing={1.5}>
+          <Box sx={{ justifyContent: "center", display: "flex" }}>
+            <Avatar
+              sx={{ width: 54, height: 54 }}
+              src={profile.profile_picture && profile.profile_picture}
+            />
+          </Box>
+          <Typography variant="h6" textAlign="center">
+            {profile.first_name && profile.first_name}{" "}
+            {profile.last_name && profile.last_name}
+          </Typography>
+          <Typography variant="subtitle2" textAlign="center">
+            {profile.role ? profile.role.name : "--"}
+          </Typography>
+          <Stack spacing={0.2} direction="row" justifyContent="center">
+            <LocationOnIcon />
+            <Typography>{profile.city ? profile.city.name : "--"}</Typography>
+          </Stack>
+          {profile.services && (
+            <ChipGroup
+              items={profile.services.map((service) => ({
+                title: service.name,
+              }))}
+              justifyContent={"center"}
+            />
+          )}
+        </Stack>
+      </CardContent>
     </Card>
   );
 };

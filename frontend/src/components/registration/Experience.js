@@ -110,7 +110,6 @@ const Experience = function (props) {
     setSuggestionServices([]);
     setRole(newRole);
     setRoleError("");
-    console.log(newRole);
     newRole &&
       getServices({ role: newRole.id })
         .then(({ data }) => {

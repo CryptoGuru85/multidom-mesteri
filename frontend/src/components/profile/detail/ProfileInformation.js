@@ -22,7 +22,11 @@ const ProfileInformation = (props) => {
               <Divider />
               <Grid container rowSpacing={3}>
                 <Grid item xs={6} md={4}>
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    justifyContent="center">
                     <AssignmentIcon />
                     <Stack>
                       <Typography variant="h6">
@@ -33,7 +37,11 @@ const ProfileInformation = (props) => {
                   </Stack>
                 </Grid>
                 <Grid item xs={6} md={4}>
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    justifyContent="center">
                     <Groups />
                     <Stack>
                       <Typography variant="h6">
@@ -44,7 +52,11 @@ const ProfileInformation = (props) => {
                   </Stack>
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <Stack direction="row" alignItems="center" spacing={2}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    justifyContent="center">
                     <EuroIcon />
                     <Stack>
                       <Typography variant="h6">

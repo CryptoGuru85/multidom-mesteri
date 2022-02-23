@@ -12,6 +12,7 @@ const DeleteButton = styled(IconButton)(({ theme: { palette } }) => ({
 }));
 
 const ChipGroup = function (props) {
+  const justify = props.justifyContent || "flex-start";
   const editable = props.editable || false;
   const items = props.items || [];
   const onRemove = (index) => {
@@ -19,12 +20,12 @@ const ChipGroup = function (props) {
   };
 
   return (
-    <Stack direction="row" flex={1} flexWrap="wrap">
+    <Stack direction="row" flex={1} flexWrap="wrap" justifyContent={justify}>
       {items.map((item, index) => (
         <Box
           key={index}
           sx={({ palette }) => ({
-            borderRadius: 3,
+            borderRadius: 8,
             background: palette.grey.A200,
             display: "block",
             marginX: 0.6,

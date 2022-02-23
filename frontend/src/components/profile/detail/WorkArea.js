@@ -16,7 +16,7 @@ const WorkArea = (props) => {
             <Typography variant="h6">Area of work</Typography>
             <Stack spacing={0.2} direction="row" alignItems="center">
               <LocationOnIcon />
-              <Typography>{profile.city}</Typography>
+              <Typography>{profile.city ? profile.city.name : "--"}</Typography>
             </Stack>
             <Box>
               <img src="https://cdn.discordapp.com/attachments/926446798065778718/934898639212515379/unknown.png" />

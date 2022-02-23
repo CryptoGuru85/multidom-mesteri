@@ -34,7 +34,7 @@ const Contact = function (props) {
     first_name: profile.first_name,
     last_name: profile.last_name,
     address: profile.address,
-    city: profile.city,
+    city: profile.city.id,
     mobile: profile.mobile,
   };
   const validationSchema = yup.object().shape({

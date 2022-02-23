@@ -380,7 +380,7 @@ function Header(props) {
                 <MenuItem onClick={handleAuthClose}>Profile</MenuItem>
                 <MenuItem onClick={props.logout}>Logout</MenuItem>
               </Menu>
-              {profile && profile.is_owner && profile.first_name == "" && (
+              {profile && profile.is_owner && (
                 <Registration
                   userId={props.user.id}
                   profile={profile}
