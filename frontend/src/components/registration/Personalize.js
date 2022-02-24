@@ -22,7 +22,7 @@ import { getUploadedFileValue } from "../../util/functions";
 const price_estimations = [false, true];
 const cleanings = [false, true];
 const experiences = [1, 2, 3, 4, 5, 6, 7, 8];
-const team_sizes = ["1-3", "3+"];
+const team_sizes = ["1-3", "4-6", "6+"];
 
 const Label = styled(FormLabel)(() => ({
   marginBottom: 3,
@@ -32,6 +32,8 @@ const Personalize = function (props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [priceEstimationError, setPriceEstimationError] = useState("");
   const [cleaningError, setCleaningError] = useState("");
+  const [showFileUpload, setShowFileUpload] = useState(false);
+
   const ref = useRef();
   const [image, setImage] = useState(null);
 
@@ -42,7 +44,7 @@ const Personalize = function (props) {
       .required("Experience is required"),
     price_estimate: yup.boolean().nullable(),
     cleaning: yup.boolean().nullable(),
-    team_size: yup
+    team: yup
       .string()
       .oneOf([...team_sizes])
       .required("Team size is required"),
@@ -53,7 +55,7 @@ const Personalize = function (props) {
       experience: profile.experience || "",
       price_estimate: profile.price_estimate,
       cleaning: profile.cleaning,
-      team_size: profile.team_size,
+      team: profile.team,
     },
     onSubmit: async (values) => {
       let valid = true;
@@ -72,6 +74,7 @@ const Personalize = function (props) {
 
       updateProfile(props.userId, { ...values, profile_picture })
         .then(({ data }) => {
+          props.setProfile(data);
           props.nextStep();
         })
         .catch(({ response }) => {})
@@ -97,6 +100,10 @@ const Personalize = function (props) {
 
   const handleRemoveImage = () => {
     setImage(null);
+  };
+
+  const toggleFileUpload = () => {
+    setShowFileUpload(!showFileUpload);
   };
 
   const { getFieldProps, handleSubmit } = formik;
@@ -127,13 +134,19 @@ const Personalize = function (props) {
               justifyContent: "center",
               alignItems: "center",
             }}>
-            <TextField
-              ref={ref}
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-            />
-            {/* <Button variant="outlined">Upload Photo</Button> */}
+            {showFileUpload && (
+              <TextField
+                ref={ref}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            )}
+            {!showFileUpload && (
+              <Button variant="outlined" onClick={toggleFileUpload}>
+                Upload Photo
+              </Button>
+            )}
             <Button sx={{ marginTop: 1 }} onClick={handleRemoveImage}>
               Remove
             </Button>
@@ -142,9 +155,9 @@ const Personalize = function (props) {
         <Stack spacing={2}>
           <FormControl>
             <Label>Experience</Label>
-            <Select {...getFieldProps("experience")}>
+            <Select {...getFieldProps("experience", true)}>
               {experiences.map((experience) => (
-                <MenuItem value={experience}>
+                <MenuItem key={experience} value={experience}>
                   {experience} {experience == "1" && " Year"}{" "}
                   {experience != "1" && " Years"}
                 </MenuItem>
@@ -192,9 +205,11 @@ const Personalize = function (props) {
           </FormControl>
           <FormControl>
             <Label>Team size</Label>
-            <Select {...getFieldProps("team_size")}>
-              {team_sizes.map((team_size) => (
-                <MenuItem value={team_size}>{team_size} People</MenuItem>
+            <Select {...getFieldProps("team", true)}>
+              {team_sizes.map((team_size, index) => (
+                <MenuItem key={index} value={team_size}>
+                  {team_size} People
+                </MenuItem>
               ))}
             </Select>
           </FormControl>

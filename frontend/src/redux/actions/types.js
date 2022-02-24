@@ -11,3 +11,11 @@ export const GET_PROFILE = "GET_PROFILE";
 export const GET_PROFILE_LIST = "GET_PROFILE_LIST";
 export const EDIT_PROFILE = "EDIT_PROFILE";
 export const PROFILE_FAIL = "PROFILE_FAIL";
+export const SET_PROFILE = "SET_PROFILE";
+
+export const GET_CITIES = "GET_CITIES";
+export const GET_SERVICES = "GET_SERVICES";
+export const GET_ROLES = "GET_ROLES";
+export const GET_CITIES_ERROR = "GET_CITIES";
+export const GET_ROLES_ERROR = "GET_ROLES";
+export const GET_SERVICES_ERROR = "GET_SERVICES";

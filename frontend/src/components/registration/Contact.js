@@ -10,11 +10,14 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { getCities, updateProfile } from "api/auth";
+import { getCities as getCitiesApi, updateProfile } from "api/auth";
 import { capitalCase } from "change-case";
 import useFormikValidation from "hooks/useFormikValidation";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import * as yup from "yup";
+import { getCities } from "./../../redux/actions/registration";
 
 const entities = ["INDIVIDUAL", "COMPANY"];
 const entityLabels = ["person", "company"];
@@ -34,7 +37,7 @@ const Contact = function (props) {
     first_name: profile.first_name,
     last_name: profile.last_name,
     address: profile.address,
-    city: profile.city.id,
+    city: profile.city ? profile.city.id : null,
     mobile: profile.mobile,
   };
   const validationSchema = yup.object().shape({
@@ -56,10 +59,11 @@ const Contact = function (props) {
   const formik = useFormikValidation({
     initialValues,
     onSubmit(values) {
+      setIsSubmitting(true);
       updateProfile(props.userId, values)
         .then(({ data }) => {
-          props.nextStep();
           props.setProfile(data);
+          props.nextStep();
         })
         .catch(({ response }) => {})
         .finally(() => {
@@ -69,15 +73,19 @@ const Contact = function (props) {
     validationSchema,
   });
   const { getFieldProps, handleSubmit } = formik;
+
   useEffect(() => {
-    getCities()
+    let cancel = false;
+    getCitiesApi()
       .then(({ data }) => {
-        setCities(data);
+        !cancel && setCities(data);
       })
-      .catch(({ response }) => {
-        console.log(response);
-      });
-  }, []);
+      .catch(({ response }) => {});
+
+    return () => {
+      cancel = true;
+    };
+  }, [props.cities]);
 
   return (
     <Stack>
@@ -112,9 +120,11 @@ const Contact = function (props) {
           </FormControl>
           <FormControl>
             <Label>City</Label>
-            <Select {...getFieldProps("city")} fullWidth>
+            <Select {...getFieldProps("city", true)} fullWidth>
               {cities.map((city) => (
-                <MenuItem value={city.id}>{city.name}</MenuItem>
+                <MenuItem key={city.id} value={city.id}>
+                  {city.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -140,4 +150,14 @@ const Contact = function (props) {
     </Stack>
   );
 };
-export default Contact;
+
+Contact.propTypes = {
+  getCities: PropTypes.func.isRequired,
+  cities: PropTypes.array.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  cities: state.registration.cities,
+});
+
+export default connect(mapStateToProps, { getCities })(Contact);

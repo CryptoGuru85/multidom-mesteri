@@ -1,5 +1,5 @@
 import api from "../../api";
-import { GET_PROFILE, GET_PROFILE_LIST } from "./types";
+import { GET_PROFILE, GET_PROFILE_LIST, SET_PROFILE } from "./types";
 
 export const getProfileList = (inputState) => (dispatch, getState) => {
   api
@@ -29,4 +29,11 @@ export const getProfile = (id) => (dispatch, getState) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const setProfile = (profile) => (dispatch) => {
+  dispatch({
+    type: SET_PROFILE,
+    payload: profile,
+  });
 };

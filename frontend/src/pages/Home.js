@@ -30,7 +30,7 @@ const Home = (props) => {
     <Grid container rowSpacing={3} columnSpacing={3}>
       {profileListState.length > 0 &&
         profileListState.map((data, index) => (
-          <Grid item key={index} xs={6} md={4} lg={3}>
+          <Grid item key={index} xs={12} sm={6} md={6} lg={3}>
             <Overview data={data} />
           </Grid>
         ))}

@@ -1,7 +1,30 @@
 import axios from "axios";
 
+// const env_base_url = process.env.API_BASE_URL;
+
+// const getBaseUrl = () => {
+//   const _default = new URL(env_base_url);
+
+//   if (env_base_url && env_base_url.indexOf(_default.host)) return env_base_url;
+
+//   //   process.env.NODE_ENV !== "production" && typeof
+//   if (typeof window !== "undefined") {
+//     const url = new URL(_default.pathname, window.location.href);
+//     const _port = _default.port;
+
+//     if (!!_port) {
+//       url.port = _port;
+//       return url.href;
+//     }
+//     return url.href;
+//   }
+//   return _default.href;
+// };
+
+const baseURL = "/api";
+
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL,
 });
 
 api.interceptors.request.use(
@@ -11,7 +34,10 @@ api.interceptors.request.use(
       headers: {
         ...config.headers,
         Authorization:
-          !config.url.includes("register") && !config.url.includes("login")
+          !config.url.includes("register") &&
+          !config.url.includes("login") &&
+          !config.url.includes("profiles") &&
+          !config.url.includes("profile")
             ? `Bearer ${localStorage.getItem("token")}`
             : null,
       },

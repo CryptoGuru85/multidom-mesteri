@@ -3,11 +3,11 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Link from "@mui/material/Link";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ChipGroup from "components/ChipGroup";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 const Overview = (props) => {
   const [profile, setProfile] = useState({});
@@ -17,7 +17,7 @@ const Overview = (props) => {
   }, [props.data]);
 
   return (
-    <Card component={Link} to={`/profile/${profile.user}`}>
+    <Card component={Link} href={`/profile/${profile.user}`}>
       <CardContent>
         <Stack spacing={1.5}>
           <Box sx={{ justifyContent: "center", display: "flex" }}>
@@ -30,7 +30,7 @@ const Overview = (props) => {
             {profile.first_name && profile.first_name}{" "}
             {profile.last_name && profile.last_name}
           </Typography>
-          <Typography variant="subtitle2" textAlign="center">
+          <Typography sx={{ fontWeight: 400 }} textAlign="center">
             {profile.role ? profile.role.name : "--"}
           </Typography>
           <Stack spacing={0.2} direction="row" justifyContent="center">

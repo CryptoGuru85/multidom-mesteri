@@ -43,14 +43,13 @@ const Login = (props) => {
 
   const handleOpen = () => {
     let oldPath = window.location.href;
-    console.log("The state", oldPath);
     const backTo = oldPath.split(window.location.origin);
 
     const { id, username } = props;
 
-    const newPath = `/#/login`;
+    const newPath = `login`;
     if (backTo[1] === newPath) {
-      oldPath = `/#/`;
+      oldPath = `/`;
     }
 
     setPathState({
@@ -58,12 +57,12 @@ const Login = (props) => {
       newPath: newPath,
     });
 
-    window.history.pushState(null, null, newPath);
+    // window.history.pushState(null, null, newPath);
     props.handleDialogStateChange("login");
   };
 
   const handleClose = () => {
-    window.history.pushState(null, null, pathState.oldPath);
+    // window.history.pushState(null, null, pathState.oldPath);
     props.handleDialogStateChange(null);
   };
 
@@ -90,9 +89,11 @@ const Login = (props) => {
 
   return (
     <>
-      <Button onClick={handleOpen} sx={{ marginRight: 3 }}>
-        Login
-      </Button>
+      {!props.dialogOnly && (
+        <Button onClick={handleOpen} sx={{ marginRight: 3 }}>
+          Login
+        </Button>
+      )}
 
       <Dialog
         open={openState.open}

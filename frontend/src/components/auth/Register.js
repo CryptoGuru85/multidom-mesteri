@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as yup from "yup";
 import { register } from "../../redux/actions/auth";
+import { register as registerApi } from "./../../api/auth";
 import Logo from "./../Logo";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -22,6 +23,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const Register = (props) => {
+  const [error, setError] = useState();
   const schema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().min(5).required(),
@@ -32,11 +34,22 @@ const Register = (props) => {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    props.register(values);
+    setSubmitting(true);
+    registerApi(values)
+      .then(({ data }) => {
+        props.handleDialogStateChange("login");
+      })
+      .catch(({ response }) => {
+        setError(response.data);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+    // props.register(values);
 
-    setSubmitting(false);
-    values.password = "";
-    props.handleDialogStateChange("login");
+    // setSubmitting(false);
+    // values.password = "";
+    // props.handleDialogStateChange("login");
   };
 
   const [openState, setOpenState] = useState({
@@ -54,9 +67,9 @@ const Register = (props) => {
 
     const { id, username } = props;
 
-    const newPath = `/#/register`;
+    const newPath = `register`;
     if (backTo[1] === newPath) {
-      oldPath = `/#/`;
+      oldPath = `/`;
     }
 
     setPathState({
@@ -79,7 +92,7 @@ const Register = (props) => {
     } else {
       openState.open && setOpenState({ open: false });
     }
-  }, [props.activeDialog]);
+  }, [props.activeDialog, props.error]);
 
   const alreadyRegistered = () => {
     props.handleDialogStateChange("login");
@@ -89,9 +102,11 @@ const Register = (props) => {
 
   return (
     <>
-      <Button onClick={handleOpen} variant="contained">
-        Register
-      </Button>
+      {!props.dialogOnly && (
+        <Button onClick={handleOpen} variant="contained">
+          Register
+        </Button>
+      )}
       <Dialog
         open={openState.open}
         onClose={handleClose}
@@ -169,13 +184,13 @@ const Register = (props) => {
                     </LoadingButton>
                   </Stack>
 
-                  {serverMessage ? (
+                  {error ? (
                     <Typography
                       align="center"
                       color="error"
                       display="block"
                       sx={{ marginTop: 2 }}>
-                      {serverMessage && serverMessage.email}
+                      {error && error.email}
                     </Typography>
                   ) : (
                     ""

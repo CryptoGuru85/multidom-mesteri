@@ -124,11 +124,19 @@ const Experience = function (props) {
   };
 
   useEffect(() => {
+    let cancel = false;
+    props.profile.services && setServices(props.profile.services);
+    props.profile.about && setDescription(props.profile.about);
+    props.profile.role && setRole(props.profile.role);
     getRoles()
       .then(({ data }) => {
+        if (cancel) return;
         setRoles(data);
       })
       .catch((err) => {});
+    return () => {
+      cancel = true;
+    };
   }, []);
 
   return (

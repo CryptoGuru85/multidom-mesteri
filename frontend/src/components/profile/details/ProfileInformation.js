@@ -24,9 +24,8 @@ const ProfileInformation = (props) => {
                 <Grid item xs={6} md={4}>
                   <Stack
                     direction="row"
-                    alignItems="center"
                     spacing={2}
-                    justifyContent="center">
+                    justifyContent={{ xs: "flex-start", md: "center" }}>
                     <AssignmentIcon />
                     <Stack>
                       <Typography variant="h6">
@@ -41,7 +40,7 @@ const ProfileInformation = (props) => {
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    justifyContent="center">
+                    justifyContent={"center"}>
                     <Groups />
                     <Stack>
                       <Typography variant="h6">
@@ -51,12 +50,12 @@ const ProfileInformation = (props) => {
                     </Stack>
                   </Stack>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={6} md={4}>
                   <Stack
                     direction="row"
                     alignItems="center"
                     spacing={2}
-                    justifyContent="center">
+                    justifyContent={{ xs: "flex-start", md: "center" }}>
                     <EuroIcon />
                     <Stack>
                       <Typography variant="h6">
@@ -76,11 +75,13 @@ const ProfileInformation = (props) => {
             <Stack spacing={2}>
               <Typography variant="h6">Services Offered</Typography>
               <Divider />
-              <ChipGroup
-                items={profile.services.map((service) => ({
-                  title: service.name,
-                }))}
-              />
+              {profile.services && (
+                <ChipGroup
+                  items={profile.services.map((service) => ({
+                    title: service.name,
+                  }))}
+                />
+              )}
             </Stack>
             <Stack spacing={2}>
               <Typography variant="h6">Portfolio</Typography>

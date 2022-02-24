@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { Provider } from "react-redux";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
-import ProfileDetails from "./components/profile/ProfileDetails";
-import Home from "./pages/Home";
+import ProfileDetail from "./components/profile/ProfileDetail";
+import NotFound from "./pages/NotFound";
 import { loadUser } from "./redux/actions/auth";
 import store from "./redux/store";
 import ThemeProvider from "./theme";
@@ -16,14 +16,16 @@ const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider>
-        <Router>
-          <Header>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/profile/:id" component={ProfileDetails} />
-            </Switch>
-          </Header>
-        </Router>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Header />} />
+            <Route path="/profile">
+              <Route path=":id" element={<ProfileDetail />} />
+              <Route path="*" element={<NotFound />} />
+            </Route>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
       </ThemeProvider>
     </Provider>
   );
