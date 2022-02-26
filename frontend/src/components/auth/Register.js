@@ -45,11 +45,6 @@ const Register = (props) => {
       .finally(() => {
         setSubmitting(false);
       });
-    // props.register(values);
-
-    // setSubmitting(false);
-    // values.password = "";
-    // props.handleDialogStateChange("login");
   };
 
   const [openState, setOpenState] = useState({

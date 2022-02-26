@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { loadUser, logout } from "redux/actions/auth";
-import { getProfile } from "redux/actions/profile";
+import { getUserProfile } from "redux/actions/profile";
 import Auth from "./auth";
 import Logo from "./Logo";
 import Registration from "./registration";
@@ -46,17 +46,19 @@ const TopAppBar = (props) => {
   };
 
   useEffect(() => {
-    if (props.user && props.profile) {
-      props.user.id != props.profile.user
-        ? props.getProfile(props.user.id)
-        : setProfile(props.profile);
+    if (props.user && props.user_profile) {
+      props.user.id != props.user_profile.user
+        ? props.getUserProfile(props.user.id)
+        : setProfile(props.user_profile);
     } else {
       !props.user && props.loadUser();
       if (props.isAuthenticated) {
-        !props.profile && props.user && props.getProfile(props.user.id);
+        !props.user_profile &&
+          props.user &&
+          props.getUserProfile(props.user.id);
       }
     }
-  }, [props.profile, props.user, props.isAuthenticated]);
+  }, [props.user_profile, props.user, props.isAuthenticated]);
   return (
     <>
       <AppBar
@@ -97,7 +99,7 @@ const TopAppBar = (props) => {
                     aria-haspopup="true"
                     onClick={handleAuthOpen}
                     color="inherit">
-                    <Avatar src={props.profile.profile_picture} />
+                    <Avatar src={props.user_profile.profile_picture} />
                   </IconButton>
                   <Menu
                     id="menu-appbar"
@@ -181,16 +183,16 @@ const TopAppBar = (props) => {
 
 TopAppBar.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
-  profile: PropTypes.object.isRequired,
+  user_profile: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
-  profile: state.profile.profile,
+  user_profile: state.profile.user_profile,
 });
 
-export default connect(mapStateToProps, { getProfile, loadUser, logout })(
+export default connect(mapStateToProps, { getUserProfile, loadUser, logout })(
   TopAppBar
 );

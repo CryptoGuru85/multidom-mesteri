@@ -1,4 +1,6 @@
 import json
+from unicodedata import name
+from unittest.mock import MagicMock
 
 from accounts.models import City, Profile, Role, Service
 from django.contrib.auth import get_user_model
@@ -71,9 +73,27 @@ class ProfileListAPIView(generics.ListAPIView):
     search_fields = ["user_type", "role__name", "services__name", "city"]
 
     def get_queryset(self):
+        services_name = self.request.query_params.get("services_name", "")
+        city = self.request.query_params.get("city", None)
+        user_type = self.request.query_params.get("user_type", None)
+
         qs = Profile.objects.filter(
             user__is_admin=False, first_name__isnull=False
         ).exclude(first_name="", last_name="")
+
+        if not city is None and city != "":
+            qs = qs.filter(city=city)
+
+        if not user_type is None and user_type != "":
+            qs = qs.filter(user_type=user_type)
+
+        if not services_name is None and services_name != "":
+            services = [
+                service.pk
+                for service in Service.objects.filter(name__icontains=services_name)
+            ]
+            qs = qs.filter(services__in=services)
+
         return qs
 
 
@@ -94,8 +114,6 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
     def get_serializer_context(self, *args, **kwargs):
         user = self.request.user
         profile = self.get_object()
-
-        print(user.pk, profile.owner.pk)
 
         is_owner = False  # the idea is. If owner=false, show a follow button
 
@@ -118,15 +136,13 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
             )
             for service in _services
         ]
-
         instance.services.set(services, clear=True)
-
         return instance
 
 
 class RoleListApiView(generics.ListCreateAPIView):
     permission_classes = [
-        permissions.IsAuthenticated,
+        permissions.AllowAny,
     ]
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
@@ -163,7 +179,7 @@ class ServiceApiView(generics.RetrieveUpdateDestroyAPIView):
 
 class CityListApiView(generics.ListAPIView):
     permission_classes = [
-        permissions.IsAuthenticated,
+        permissions.AllowAny,
     ]
     serializer_class = CitySerializer
     queryset = City.objects.all()

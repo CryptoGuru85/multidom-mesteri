@@ -1,23 +1,17 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
 import Toolbar from "@mui/material/Toolbar";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { getProfile, getProfileList } from "../redux/actions/profile";
-import Home from "./../pages/Home";
 import Drawer from "./Drawer";
+import ProfileOverview from "./profile/ProfileOverview";
 import TopAppBar from "./TopAppBar";
 
-function Header(props) {
-  const [profile, setProfile] = useState();
-  const [filterInputState, setFilterInputState] = useState({
-    searchInput: "",
-    locationInput: "",
-    entityInput: "",
-  });
-
+const Home = (props) => {
+  const [profileList, setProfileList] = useState([]);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -25,10 +19,8 @@ function Header(props) {
   };
 
   useEffect(() => {
-    props.getProfileList(filterInputState);
-    props.user && props.getProfile(props.user.id);
-    props.profile && setProfile(props.profile);
-  }, [props.user]);
+    props.profile_list && setProfileList(props.profile_list || []);
+  }, [props.profile_list]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -52,26 +44,26 @@ function Header(props) {
             Filter
           </Button>
         </Box>
-        <Home />
+        <Grid container rowSpacing={3} columnSpacing={3}>
+          {profileList &&
+            profileList.length > 0 &&
+            profileList?.map((data, index) => (
+              <Grid item key={index} xs={12} sm={6} md={6} lg={4}>
+                <ProfileOverview data={data} />
+              </Grid>
+            ))}
+        </Grid>
       </Box>
     </Box>
   );
-}
+};
 
-Header.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
+Home.propTypes = {
   profile_list: PropTypes.array.isRequired,
-  loading: PropTypes.bool.isRequired,
-
-  window: PropTypes.func,
 };
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
   profile_list: state.profile.profile_list,
-  loading: state.profile.loading,
-  profile: state.profile.profile,
-  user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { getProfileList, getProfile })(Header);
+export default connect(mapStateToProps)(Home);

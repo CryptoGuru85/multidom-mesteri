@@ -7,6 +7,7 @@ export default function Link(theme: Theme) {
     MuiLink: {
       defaultProps: {
         underline: "none",
+        cursor: "pointer",
       },
     },
   };

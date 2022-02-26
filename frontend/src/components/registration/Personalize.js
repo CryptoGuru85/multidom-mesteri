@@ -29,27 +29,26 @@ const Label = styled(FormLabel)(() => ({
 }));
 
 const Personalize = function (props) {
+  const profile = props.profile;
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [priceEstimationError, setPriceEstimationError] = useState("");
   const [cleaningError, setCleaningError] = useState("");
+  const [experience, setExperience] = useState(profile.experience || "");
+  const [experienceError, setExperienceError] = useState("");
   const [showFileUpload, setShowFileUpload] = useState(false);
 
   const ref = useRef();
   const [image, setImage] = useState(null);
 
   const validationSchema = yup.object().shape({
-    experience: yup
-      .number()
-      .oneOf([...experiences])
-      .required("Experience is required"),
-    price_estimate: yup.boolean().nullable(),
-    cleaning: yup.boolean().nullable(),
+    experience: yup.number(),
     team: yup
       .string()
       .oneOf([...team_sizes])
       .required("Team size is required"),
+    cleaning: yup.boolean(),
+    price_estimate: yup.boolean(),
   });
-  const profile = props.profile;
   const formik = useFormikValidation({
     initialValues: {
       experience: profile.experience || "",
@@ -68,11 +67,16 @@ const Personalize = function (props) {
         valid = false;
         setCleaningError("Cleaning is required");
       }
+
+      if (experience === "" || experience == null) {
+        valid = false;
+        setExperienceError("Experience is required");
+      }
       if (!valid) return;
       setIsSubmitting(true);
       const profile_picture = image ? await getUploadedFileValue(image) : image;
 
-      updateProfile(props.userId, { ...values, profile_picture })
+      updateProfile(props.userId, { ...values, profile_picture, experience })
         .then(({ data }) => {
           props.setProfile(data);
           props.nextStep();
@@ -104,6 +108,11 @@ const Personalize = function (props) {
 
   const toggleFileUpload = () => {
     setShowFileUpload(!showFileUpload);
+  };
+
+  const handleExperienceChange = (event) => {
+    setExperienceError("");
+    setExperience(event.target.value);
   };
 
   const { getFieldProps, handleSubmit } = formik;
@@ -155,7 +164,7 @@ const Personalize = function (props) {
         <Stack spacing={2}>
           <FormControl>
             <Label>Experience</Label>
-            <Select {...getFieldProps("experience", true)}>
+            <Select value={experience} onChange={handleExperienceChange}>
               {experiences?.map((experience) => (
                 <MenuItem key={experience} value={experience}>
                   {experience} {experience == "1" && " Year"}{" "}
@@ -163,6 +172,9 @@ const Personalize = function (props) {
                 </MenuItem>
               ))}
             </Select>
+            <Typography variant="caption" color="error" sx={{ marginTop: 1 }}>
+              {experienceError}
+            </Typography>
           </FormControl>
           <FormControl>
             <Label>Price for estimation</Label>

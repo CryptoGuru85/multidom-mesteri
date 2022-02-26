@@ -9,7 +9,6 @@ import {
 } from "./types";
 
 export const getCities = () => (dispatch) => {
-  console.log("get cities action");
   api
     .get("accounts/cities/")
     .then(({ data }) => {

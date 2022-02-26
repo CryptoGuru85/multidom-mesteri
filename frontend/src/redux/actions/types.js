@@ -19,3 +19,6 @@ export const GET_ROLES = "GET_ROLES";
 export const GET_CITIES_ERROR = "GET_CITIES";
 export const GET_ROLES_ERROR = "GET_ROLES";
 export const GET_SERVICES_ERROR = "GET_SERVICES";
+
+export const GET_USER_PROFILE = "GET_USER_PROFILE";
+export const GET_USER_PROFILE_ERROR = "GET_USER_PROFILE_ERROR";

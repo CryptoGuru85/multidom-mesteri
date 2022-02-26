@@ -38,6 +38,7 @@ api.interceptors.request.use(
         ...(!!token &&
           !config.url.includes("register") &&
           !config.url.includes("login") &&
+          !config.url.includes("cities") &&
           !config.url.includes("profiles") && {
             Authorization: `Bearer ${token}`,
           }),

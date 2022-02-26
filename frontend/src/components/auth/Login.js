@@ -57,12 +57,10 @@ const Login = (props) => {
       newPath: newPath,
     });
 
-    // window.history.pushState(null, null, newPath);
     props.handleDialogStateChange("login");
   };
 
   const handleClose = () => {
-    // window.history.pushState(null, null, pathState.oldPath);
     props.handleDialogStateChange(null);
   };
 
@@ -82,10 +80,6 @@ const Login = (props) => {
   const notRegistered = () => {
     props.handleDialogStateChange("register");
   };
-
-  // const store = useStore();
-  // const state = store.getState();
-  // const user = state.auth.user;
 
   return (
     <>

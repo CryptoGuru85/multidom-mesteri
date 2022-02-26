@@ -96,7 +96,7 @@ class Role(models.Model):
 
 
 class Service(models.Model):
-    name = models.CharField(max_length=255, null=False, blank=False)
+    name = models.TextField(max_length=255, null=False, blank=False)
     is_suggested = models.BooleanField(default=False)
     role = models.ForeignKey(Role, models.CASCADE, blank=False, null=False)
 

@@ -1,20 +1,22 @@
 import api from "../../api";
-import { GET_PROFILE, GET_PROFILE_LIST, SET_PROFILE } from "./types";
+import {
+  GET_PROFILE,
+  GET_PROFILE_LIST,
+  GET_USER_PROFILE,
+  GET_USER_PROFILE_ERROR,
+  SET_PROFILE,
+} from "./types";
 
-export const getProfileList = (inputState) => (dispatch, getState) => {
+export const getProfileList = (params) => (dispatch, getState) => {
   api
-    .get(
-      `accounts/profiles/?search=${inputState.searchInput}+${inputState.locationInput}+${inputState.entityInput}`
-    )
+    .get(`accounts/profiles/`, { params })
     .then(({ data }) => {
       dispatch({
         type: GET_PROFILE_LIST,
         payload: data,
       });
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => {});
 };
 
 export const getProfile = (id) => (dispatch, getState) => {
@@ -26,8 +28,23 @@ export const getProfile = (id) => (dispatch, getState) => {
         payload: res.data,
       });
     })
-    .catch((err) => {
-      console.log(err);
+    .catch((err) => {});
+};
+
+export const getUserProfile = (id) => (dispatch, getState) => {
+  api
+    .get(`accounts/profile/${id}/`)
+    .then((res) => {
+      dispatch({
+        type: GET_USER_PROFILE,
+        payload: res.data,
+      });
+    })
+    .catch(({ response }) => {
+      dispatch({
+        type: GET_USER_PROFILE_ERROR,
+        payload: response,
+      });
     });
 };
 

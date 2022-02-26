@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import ChipGroup from "components/ChipGroup";
 import React, { useEffect, useState } from "react";
 
-const Overview = (props) => {
+const ProfileOverview = (props) => {
   const [profile, setProfile] = useState({});
 
   useEffect(() => {
@@ -51,4 +51,4 @@ const Overview = (props) => {
   );
 };
 
-export default Overview;
+export default ProfileOverview;

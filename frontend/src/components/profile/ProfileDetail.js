@@ -7,7 +7,6 @@ import Link from "@mui/material/Link";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import TopAppBar from "components/TopAppBar";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -21,14 +20,14 @@ const ProfileDetail = (props) => {
   const { id } = useParams();
 
   useEffect(() => {
-    if (props.profile && id) {
-      props.profile.user != id
-        ? props.getProfile(id)
-        : setProfile(props.profile);
-    } else {
-      props.getProfile(id);
+    if (id) {
+      if (props.profile && props.profile.user === parseInt(id)) {
+        setProfile(props.profile);
+      } else {
+        props.getProfile(id);
+      }
     }
-  }, [props.profile, props.getProfile, id]);
+  }, [props.profile]);
 
   return !profile ? (
     <></>
@@ -61,12 +60,6 @@ const ProfileDetail = (props) => {
       </Container>
     </>
   );
-};
-
-ProfileDetail.propTypes = {
-  isAuthenticated: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  profile: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({

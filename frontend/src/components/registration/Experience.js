@@ -36,7 +36,6 @@ const Experience = function (props) {
   const validationSchema = yup.object().shape({});
 
   const handleSubmition = () => {
-    console.log("submit ", services);
     let valid = true;
     if (!role) {
       setRoleError("Role is required");
@@ -152,7 +151,6 @@ const Experience = function (props) {
     setServices(newServices);
     setService({ id: null, name: "" });
     setServiceError("");
-    console.log(newServices);
   };
 
   useEffect(() => {

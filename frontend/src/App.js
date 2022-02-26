@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "./components/Home";
 import ProfileDetail from "./components/profile/ProfileDetail";
 import NotFound from "./pages/NotFound";
 import { loadUser } from "./redux/actions/auth";

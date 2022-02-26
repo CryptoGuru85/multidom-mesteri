@@ -1,8 +1,14 @@
-import { GET_PROFILE, GET_PROFILE_LIST, SET_PROFILE } from "../actions/types";
+import {
+  GET_PROFILE,
+  GET_PROFILE_LIST,
+  GET_USER_PROFILE,
+  SET_PROFILE,
+} from "../actions/types";
 
 const initialState = {
   profile_list: [],
   profile: {},
+  user_profile: {},
   loading: false,
 };
 
@@ -22,10 +28,16 @@ export default function (state = initialState, action) {
         loading: true,
       };
 
+    case GET_USER_PROFILE:
+      return {
+        ...state,
+        user_profile: action.payload,
+      };
+
     case SET_PROFILE:
       return {
         ...state,
-        profile: action.payload,
+        user_profile: action.payload,
       };
 
     default:
