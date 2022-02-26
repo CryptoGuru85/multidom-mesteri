@@ -39,7 +39,7 @@ const Overview = (props) => {
           </Stack>
           {profile.services && (
             <ChipGroup
-              items={profile.services.map((service) => ({
+              items={profile?.services?.map((service) => ({
                 title: service.name,
               }))}
               justifyContent={"center"}

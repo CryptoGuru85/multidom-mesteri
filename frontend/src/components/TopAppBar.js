@@ -65,9 +65,7 @@ const TopAppBar = (props) => {
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
         {profile &&
           profile.is_owner &&
-          (profile.first_name === "" ||
-            profile.role == null ||
-            profile.profile_picture == null) &&
+          (!profile.first_name || !profile.role || !profile.profile_picture) &&
           props.isAuthenticated && (
             <Registration
               userId={profile.user}
@@ -83,7 +81,7 @@ const TopAppBar = (props) => {
             sx={{ width: "100%" }}>
             <Box>
               <Link href="/">
-                <Stack direction="row" spacing={3} alignItems="center">
+                <Stack direction="row" spacing={1} alignItems="center">
                   <Logo />
                   <Typography color="primary">Meșteri</Typography>
                 </Stack>

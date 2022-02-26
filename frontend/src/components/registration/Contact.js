@@ -95,7 +95,7 @@ const Contact = function (props) {
           <FormControl sx={{ marginTop: 2 }}>
             <Label>Entity</Label>
             <RadioGroup row {...getFieldProps("user_type", true)}>
-              {entities.map((entity, index) => (
+              {entities?.map((entity, index) => (
                 <FormControlLabel
                   key={entity}
                   value={entity}
@@ -121,7 +121,7 @@ const Contact = function (props) {
           <FormControl>
             <Label>City</Label>
             <Select {...getFieldProps("city", true)} fullWidth>
-              {cities.map((city) => (
+              {cities?.map((city) => (
                 <MenuItem key={city.id} value={city.id}>
                   {city.name}
                 </MenuItem>

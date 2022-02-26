@@ -4,7 +4,9 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import Link from "@mui/material/Link";
+import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import TopAppBar from "components/TopAppBar";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -32,7 +34,9 @@ const ProfileDetail = (props) => {
     <></>
   ) : (
     <>
+      <TopAppBar />
       <Container>
+        <Toolbar />
         <Box sx={{ display: "flex", alignItems: "center", paddingY: 3 }}>
           <Link href="/">
             <IconButton>

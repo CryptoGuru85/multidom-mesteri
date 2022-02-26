@@ -21,7 +21,7 @@ const ChipGroup = function (props) {
 
   return (
     <Stack direction="row" flex={1} flexWrap="wrap" justifyContent={justify}>
-      {items.map((item, index) => (
+      {items?.map((item, index) => (
         <Box
           key={index}
           sx={({ palette }) => ({

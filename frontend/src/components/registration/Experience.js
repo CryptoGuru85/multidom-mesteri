@@ -35,39 +35,46 @@ const Experience = function (props) {
 
   const validationSchema = yup.object().shape({});
 
+  const handleSubmition = () => {
+    console.log("submit ", services);
+    let valid = true;
+    if (!role) {
+      setRoleError("Role is required");
+      valid = false;
+    }
+    if (about.trim() == "") {
+      setDescriptionError("Description is required");
+      valid = false;
+    }
+    if (services.length == 0) {
+      setServiceError("Enter atleast one service");
+      valid = false;
+    }
+    if (!valid) return;
+    setSubmitting(true);
+    updateProfile(props.userId, {
+      role: role.id,
+      services: services.map((it) =>
+        it.id ? it : { ...it, role: role.id, is_suggested: false }
+      ),
+      about,
+    })
+      .then(({ data }) => {
+        props.setProfile(data);
+        props.nextStep();
+      })
+      .catch(({ response }) => {})
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
+
   const formik = useFormikValidation({
     initialValues: {
       role: props.profile.role,
     },
     onSubmit(values) {
-      let valid = true;
-      if (!role) {
-        setRoleError("Role is required");
-        valid = false;
-      }
-      if (about.trim() == "") {
-        setDescriptionError("Description is required");
-        valid = false;
-      }
-      if (services.length == 0) {
-        setServiceError("Enter atleast one service");
-        valid = false;
-      }
-      if (!valid) return;
-      setSubmitting(true);
-      updateProfile(props.userId, {
-        role: role.id,
-        services: services.map((it) => it.id),
-        about,
-      })
-        .then(({ data }) => {
-          props.setProfile(data);
-          props.nextStep();
-        })
-        .catch(({ response }) => {})
-        .finally(() => {
-          setSubmitting(false);
-        });
+      handleSubmition();
     },
     validationSchema,
   });
@@ -75,24 +82,31 @@ const Experience = function (props) {
   const { getFieldProps, handleSubmit } = formik;
 
   const handleServiceRemove = (index) => {
-    let service = services[index];
     let newServices = [...services];
     setServices(newServices.filter((_, i) => index != i));
   };
 
   const handleServiceChange = (event, newService) => {
-    setService(null);
-    setServiceError("");
+    const serviceNames = services.map((it) => it.name);
     if (
       newService == null ||
       newService == undefined ||
-      services.includes(newService)
+      services.includes(newService) ||
+      serviceNames.includes(newService)
     ) {
+      setService({ id: null, name: "" });
       return;
     }
     let newServices = [...services];
-    newServices.push(newService);
+    if (typeof newService === "string" || newService instanceof String) {
+      let newUserService = { id: null, name: newService };
+      if (!services.includes(newUserService)) newServices.push(newUserService);
+    } else {
+      newServices.push(newService);
+    }
     setServices(newServices);
+    setService({ id: null, name: "" });
+    setServiceError("");
   };
 
   const toggleShowAddService = () => {
@@ -121,6 +135,24 @@ const Experience = function (props) {
 
   const handleSkip = () => {
     props.nextStep();
+  };
+
+  const handleAddService = () => {
+    const newServices = [...services];
+    const serviceNames = services.map((it) => it.name);
+    if (
+      service === null ||
+      service.name.trim() === "" ||
+      serviceNames.includes(service.name)
+    ) {
+      setService({ id: null, name: "" });
+      return;
+    }
+    newServices.push({ ...service });
+    setServices(newServices);
+    setService({ id: null, name: "" });
+    setServiceError("");
+    console.log(newServices);
   };
 
   useEffect(() => {
@@ -163,11 +195,11 @@ const Experience = function (props) {
             </Box>
           </FormControl>
           <div>
-            <Stack>
+            <Stack spacing={1}>
               <Label>Suggested services(based on role)</Label>
               <Box>
                 <ChipGroup
-                  items={services.map((serv) => ({
+                  items={services?.map((serv) => ({
                     title: serv.name,
                   }))}
                   editable={true}
@@ -178,15 +210,27 @@ const Experience = function (props) {
               {showAddService && (
                 <Stack direction="row" spacing={1} alignItems="baseline">
                   <Autocomplete
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        onChange={(event) => {
+                          setService({ id: null, name: event.target.value });
+                        }}
+                      />
+                    )}
                     options={suggestionServices}
-                    getOptionLabel={(service) => service.name}
+                    getOptionLabel={(service) =>
+                      typeof service === "string" || service instanceof String
+                        ? service
+                        : service.name
+                    }
                     value={service}
                     onChange={handleServiceChange}
                     isOptionEqualToValue={(option, { value }) =>
                       option.value == value
                     }
                     fullWidth
+                    freeSolo
                   />
                 </Stack>
               )}
@@ -196,12 +240,25 @@ const Experience = function (props) {
                 {serviceError}
               </Typography>
             </Box>
-            <Button
-              variant="outlined"
-              onClick={toggleShowAddService}
-              sx={{ marginTop: 1 }}>
-              Add service
-            </Button>
+            {showAddService && (
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                sx={{ marginTop: 1 }}>
+                <Button onClick={toggleShowAddService}>Close</Button>
+                <Button variant="contained" onClick={handleAddService}>
+                  Add
+                </Button>
+              </Stack>
+            )}
+            {!showAddService && (
+              <Button
+                variant="outlined"
+                onClick={toggleShowAddService}
+                sx={{ marginTop: 1 }}>
+                Add service
+              </Button>
+            )}
           </div>
           <FormControl>
             <Stack direction="row">

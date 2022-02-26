@@ -98,7 +98,7 @@ class Role(models.Model):
 class Service(models.Model):
     name = models.CharField(max_length=255, null=False, blank=False)
     is_suggested = models.BooleanField(default=False)
-    role = models.OneToOneField(Role, models.CASCADE, blank=False, null=False)
+    role = models.ForeignKey(Role, models.CASCADE, blank=False, null=False)
 
 
 class City(models.Model):
@@ -116,13 +116,13 @@ class Profile(models.Model):
     company_name = models.CharField(max_length=64, blank=True, null=False)
     about = models.TextField(max_length=265, blank=True, null=False)
     address = models.TextField(max_length=265, blank=True, null=False)
-    city = models.OneToOneField(City, models.CASCADE, blank=True, null=True)
+    city = models.ForeignKey(City, models.CASCADE, blank=True, null=True)
     mobile = models.CharField(max_length=64, blank=True, null=False)
     profile_picture = models.ImageField(
         upload_to=upload_profile_picture, blank=True, null=False
     )
 
-    role = models.OneToOneField(Role, on_delete=SET_NULL, null=True)
+    role = models.ForeignKey(Role, on_delete=SET_NULL, null=True)
     services = models.ManyToManyField(Service)
 
     price_estimate = models.BooleanField(default=False)
@@ -134,6 +134,9 @@ class Profile(models.Model):
     @property
     def owner(self):
         return self.user
+
+    # class Meta:
+    # unique_together = ("city", "role", "user")
 
 
 class Project(models.Model):

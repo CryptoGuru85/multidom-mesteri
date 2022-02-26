@@ -78,7 +78,7 @@ class ProfileListAPIView(generics.ListAPIView):
 
 
 class ProfileAPIView(generics.RetrieveUpdateAPIView):
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
     serializer_class = ProfileSerializer
 
     def get_object(self, *args, **kwargs):
@@ -95,12 +95,33 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         user = self.request.user
         profile = self.get_object()
 
+        print(user.pk, profile.owner.pk)
+
         is_owner = False  # the idea is. If owner=false, show a follow button
 
-        if profile.owner == user:
+        if profile.owner.pk == user.pk:
             is_owner = True
 
         return {"is_owner": is_owner, **super().get_serializer_context(*args, **kwargs)}
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+
+        _services = self.request.data.get("services", [])
+        services = [
+            (
+                Service.objects.get(pk=service.get("id"))
+                if service.get("id", None)
+                else Service.objects.create(
+                    **{**service, "role": Role(pk=service.get("role"))}
+                )
+            )
+            for service in _services
+        ]
+
+        instance.services.set(services, clear=True)
+
+        return instance
 
 
 class RoleListApiView(generics.ListCreateAPIView):

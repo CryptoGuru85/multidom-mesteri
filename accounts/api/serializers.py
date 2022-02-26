@@ -112,7 +112,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             else None
         )
         initial["profile_picture"] = url
-        print(url)
         return initial
 
     def get_is_owner(self, _):
@@ -124,13 +123,13 @@ class ProfileSerializer(serializers.ModelSerializer):
         return ProjectSerializer(qs, many=True).data
 
     def update(self, instance, validated_data):
-        role = validated_data.get("role")
-        services = validated_data.pop("services", [])
+        # role = validated_data.get("role")
+        validated_data.pop("services", [])
 
         instance = super().update(instance, validated_data)
 
-        if role != None:
-            instance.services.set(services, clear=True)
+        # if role != None:
+        #     instance.services.set(services, clear=True)
 
         return instance
 

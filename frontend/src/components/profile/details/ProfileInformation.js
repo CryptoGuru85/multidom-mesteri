@@ -77,7 +77,7 @@ const ProfileInformation = (props) => {
               <Divider />
               {profile.services && (
                 <ChipGroup
-                  items={profile.services.map((service) => ({
+                  items={profile?.services?.map((service) => ({
                     title: service.name,
                   }))}
                 />

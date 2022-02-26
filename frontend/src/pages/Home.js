@@ -23,14 +23,16 @@ const Home = (props) => {
   }, [props.auth]);
 
   useEffect(() => {
-    setProfileListState(props.profile_list);
+    setProfileListState(props.profile_list || []);
+    console.log(props.profile_list);
   }, [props.profile_list]);
 
   return (
     <Grid container rowSpacing={3} columnSpacing={3}>
-      {profileListState.length > 0 &&
-        profileListState.map((data, index) => (
-          <Grid item key={index} xs={12} sm={6} md={6} lg={3}>
+      {profileListState &&
+        profileListState.length > 0 &&
+        profileListState?.map((data, index) => (
+          <Grid item key={index} xs={12} sm={6} md={6} lg={4}>
             <Overview data={data} />
           </Grid>
         ))}

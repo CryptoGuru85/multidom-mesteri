@@ -156,7 +156,7 @@ const Personalize = function (props) {
           <FormControl>
             <Label>Experience</Label>
             <Select {...getFieldProps("experience", true)}>
-              {experiences.map((experience) => (
+              {experiences?.map((experience) => (
                 <MenuItem key={experience} value={experience}>
                   {experience} {experience == "1" && " Year"}{" "}
                   {experience != "1" && " Years"}
@@ -168,7 +168,7 @@ const Personalize = function (props) {
             <Label>Price for estimation</Label>
 
             <RadioGroup {...getFieldProps("price_estimate", true)} row>
-              {price_estimations.map((price_estimate) => (
+              {price_estimations?.map((price_estimate) => (
                 <FormControlLabel
                   key={price_estimate}
                   value={price_estimate}
@@ -187,7 +187,7 @@ const Personalize = function (props) {
           <FormControl>
             <Label>Cleaning</Label>
             <RadioGroup {...getFieldProps("cleaning", true)} row>
-              {cleanings.map((cleaning) => (
+              {cleanings?.map((cleaning) => (
                 <FormControlLabel
                   key={cleaning}
                   value={cleaning}
@@ -206,7 +206,7 @@ const Personalize = function (props) {
           <FormControl>
             <Label>Team size</Label>
             <Select {...getFieldProps("team", true)}>
-              {team_sizes.map((team_size, index) => (
+              {team_sizes?.map((team_size, index) => (
                 <MenuItem key={index} value={team_size}>
                   {team_size} People
                 </MenuItem>
