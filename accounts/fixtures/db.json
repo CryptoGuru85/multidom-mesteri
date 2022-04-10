@@ -1,0 +1,27 @@
+[
+  {
+    "model": "accounts.service",
+    "pk": 6,
+    "fields": { "name": "Any other service", "is_suggested": true, "role": 2 }
+  },
+  {
+    "model": "accounts.service",
+    "pk": 6,
+    "fields": { "name": "Two service", "is_suggested": true, "role": 3 }
+  },
+  {
+    "model": "accounts.service",
+    "pk": 6,
+    "fields": { "name": "One service", "is_suggested": true, "role": 3 }
+  },
+  {
+    "model": "accounts.service",
+    "pk": 6,
+    "fields": { "name": "Another service", "is_suggested": true, "role": 4 }
+  },
+  {
+    "model": "accounts.service",
+    "pk": 6,
+    "fields": { "name": "Some service", "is_suggested": true, "role": 2 }
+  }
+]

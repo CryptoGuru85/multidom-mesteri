@@ -1,127 +1,25 @@
 import CloseIcon from "@mui/icons-material/Close";
-import CircularProgress from "@mui/material/CircularProgress";
+import { LoadingButton } from "@mui/lab";
+import { Button, InputLabel, Stack } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Slide from "@mui/material/Slide";
 import Typography from "@mui/material/Typography";
-import makeStyles from "@mui/styles/makeStyles";
 import { Field, Form, Formik } from "formik";
 import { TextField } from "formik-mui";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
 import * as yup from "yup";
-import { login } from "../../actions/auth";
-
-const useStyles = makeStyles({
-  loginButton: {
-    width: "150px",
-    height: "42px",
-    background: "#FFFFFF",
-    borderRadius: "2px",
-    border: "none",
-    opacity: 1,
-
-    textAlign: "center",
-    font: "normal normal bold 16px/25px Nunito",
-    letterSpacing: "0.32px",
-    color: "#606466",
-
-    "&:hover": {
-      color: "#2B2322",
-    },
-  },
-
-  formContainer: {
-    padding: "0px 121px 40px 121px",
-  },
-
-  formTitle: {
-    width: "150px",
-    height: "32px",
-    textAlign: "left",
-    font: "normal normal bold 24px/32px Nunito",
-    letterSpacing: "0.48px",
-    color: "#2B2322",
-    opacity: 1,
-    margin: "20px 0px 20px 0px",
-  },
-
-  formIcon: {
-    textAlign: "center",
-  },
-
-  fieldLabel: {
-    textAlign: "left",
-    font: "normal bold 16px/17px Nunito",
-    letterSpacing: "0.32px",
-    color: "#2B2322",
-    opacity: 1,
-  },
-
-  textField: {
-    textAlign: "left",
-    font: "medium 16px/22px Nunito",
-    letterSpacing: "0.32px",
-    color: "#2B2322",
-    margin: "20px 0px 20px 0px",
-  },
-
-  button: {
-    width: "100%",
-    height: "42px",
-    background: "#2B2322 0% 0% no-repeat padding-box",
-    boxShadow: "0px 2px 2px #00000029",
-    border: "2px solid #2B2322",
-    borderRadius: "4px",
-    textAlign: "center",
-    font: "normal normal bold 16px/25px Nunito",
-    letterSpacing: "0.32px",
-    color: "#FFFFFF",
-    opacity: 1,
-
-    "&:hover": {
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      color: "#2B2322",
-    },
-
-    "&:disabled": {
-      background: "#FFFFFF 0% 0% no-repeat padding-box",
-      color: "#808080",
-      border: "1px solid #808080",
-      "&:hover": {
-        background: "#FFFFFF 0% 0% no-repeat padding-box",
-        color: "#808080",
-        border: "1px solid #808080",
-      },
-    },
-
-    margin: "20px 0px 20px 0px",
-  },
-
-  registerText: {
-    textAlign: "center",
-    letterSpacing: "0.3px",
-    color: "#2B2322",
-    opacity: 1,
-    textDecoration: "none",
-  },
-
-  progressCircle: {
-    position: "absolute",
-  },
-});
+import { login } from "../../redux/actions/auth";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Login = (props) => {
-  const classes = useStyles();
-
   const schema = yup.object().shape({
     email: yup.string().email().required(),
     password: yup.string().min(5).required(),
@@ -145,14 +43,13 @@ const Login = (props) => {
 
   const handleOpen = () => {
     let oldPath = window.location.href;
-    console.log("The state", oldPath);
     const backTo = oldPath.split(window.location.origin);
 
     const { id, username } = props;
 
-    const newPath = `/#/login`;
+    const newPath = `login`;
     if (backTo[1] === newPath) {
-      oldPath = `/#/`;
+      oldPath = `/`;
     }
 
     setPathState({
@@ -160,35 +57,44 @@ const Login = (props) => {
       newPath: newPath,
     });
 
-    window.history.pushState(null, null, newPath);
-
-    setOpenState({
-      open: true,
-    });
+    props.handleDialogStateChange("login");
   };
 
   const handleClose = () => {
-    window.history.pushState(null, null, pathState.oldPath);
-
-    setOpenState({
-      open: false,
-    });
+    props.handleDialogStateChange(null);
   };
 
   let serverMessage = props.error.msg.non_field_errors;
 
+  useEffect(() => {
+    if (props.activeDialog == "login") {
+      !openState.open && setOpenState({ open: true });
+    } else {
+      if (openState.open)
+        setOpenState({
+          open: false,
+        });
+    }
+  }, [props.activeDialog]);
+
+  const notRegistered = () => {
+    props.handleDialogStateChange("register");
+  };
+
   return (
     <>
-      <button className={classes.loginButton} onClick={handleOpen}>
-        Login
-      </button>
+      {!props.dialogOnly && (
+        <Button onClick={handleOpen} sx={{ marginRight: 3 }}>
+          Login
+        </Button>
+      )}
 
       <Dialog
         open={openState.open}
         onClose={handleClose}
         fullWidth
         TransitionComponent={Transition}
-        maxWidth="sm">
+        maxWidth="xs">
         <DialogTitle>
           <IconButton
             aria-label="close"
@@ -201,8 +107,8 @@ const Login = (props) => {
             <CloseIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent className={classes.formContainer}>
-          <div className={classes.formIcon}>
+        <DialogContent>
+          <Stack alignItems="center" sx={{ scale: "0.8" }}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="46.985"
@@ -239,9 +145,11 @@ const Login = (props) => {
                 />
               </g>
             </svg>
-          </div>
+          </Stack>
 
-          <Typography className={classes.formTitle}>Autentificare</Typography>
+          <Typography variant="h5" sx={{ marginTop: 5 }}>
+            Login
+          </Typography>
           <Formik
             initialValues={{
               email: "",
@@ -253,9 +161,8 @@ const Login = (props) => {
             {({ isValid, dirty, isSubmitting }) => {
               return (
                 <Form>
-                  <label className={classes.fieldLabel}>Email</label>
+                  <InputLabel sx={{ marginTop: 2 }}>Email</InputLabel>
                   <Field
-                    className={classes.textField}
                     variant="outlined"
                     fullWidth
                     name="email"
@@ -263,9 +170,8 @@ const Login = (props) => {
                     type="text"
                   />
 
-                  <label className={classes.fieldLabel}>Parola</label>
+                  <InputLabel sx={{ marginTop: 2 }}>Password</InputLabel>
                   <Field
-                    className={classes.textField}
                     variant="outlined"
                     fullWidth
                     name="password"
@@ -273,28 +179,43 @@ const Login = (props) => {
                     type="password"
                   />
 
-                  <button
-                    className={classes.button}
+                  <LoadingButton
                     type="submit"
-                    disabled={!isValid || !dirty || isSubmitting}>
-                    Login{" "}
-                    {isSubmitting ? (
-                      <CircularProgress
-                        className={classes.progressCircle}
-                        size={30}
-                      />
-                    ) : (
-                      ""
-                    )}
-                  </button>
+                    disabled={!isValid || !dirty || isSubmitting}
+                    loading={isSubmitting}
+                    variant="contained"
+                    sx={{ marginTop: 3, flex: 1, paddingY: 1.5 }}
+                    fullWidth>
+                    Login
+                  </LoadingButton>
+                  <Button variant="outlined" fullWidth sx={{ marginTop: 2 }}>
+                    Recover Password
+                  </Button>
 
                   {serverMessage ? (
-                    <Typography align="center" color="error" display="block">
+                    <Typography
+                      align="center"
+                      color="error"
+                      display="block"
+                      sx={{ marginTop: 2 }}>
                       {serverMessage}
                     </Typography>
                   ) : (
                     ""
                   )}
+
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    justifyContent="center"
+                    sx={{ marginTop: 3 }}>
+                    <Typography>Not registered? </Typography>
+                    <Typography
+                      sx={{ textDecoration: "underline", fontWeight: 600 }}
+                      onClick={notRegistered}>
+                      Register
+                    </Typography>
+                  </Stack>
                 </Form>
               );
             }}
@@ -313,6 +234,7 @@ Login.propTypes = {
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   error: state.errors,
+  user: state.auth.user,
 });
 
-export default connect(mapStateToProps, { login })(withRouter(Login));
+export default connect(mapStateToProps, { login })(Login);
